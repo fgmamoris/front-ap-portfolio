@@ -75,7 +75,7 @@ export class FormEducationComponent implements OnInit {
           }
         );
     } else {
-      
+
       this.educationService
         .updateEducation({
           id: this.educationItemForm.id,
@@ -184,4 +184,11 @@ export class FormEducationComponent implements OnInit {
   get institucion() {
     return this.form.get('institucion')!;
   }
+  get dateInicioString() {
+    return this.form.get('fechaInicioString')!;
+  }
+  get dateFinString() {
+    return this.form.get('fechaFinString')!;
+  }
+
 }

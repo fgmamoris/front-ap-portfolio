@@ -10,9 +10,14 @@
         placeholder="Nombre"
         formControlName="nombre"
         required
-        autofocus
       />
     </h3>
+    <div
+      *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)"
+      class="alert alert-danger"
+    >
+      <span>El nombre debe tener al menos 3 caracteres</span>
+    </div>
     <div class="text-primary subheading">
       Apellido
       <input
@@ -23,8 +28,13 @@
         placeholder="Apellido"
         formControlName="apellido"
         required
-        autofocus
       />
+    </div>
+    <div
+      *ngIf="apellido.invalid && (apellido.dirty || apellido.touched)"
+      class="alert alert-danger mt-3"
+    >
+      <span>El apellido debe tener al menos 5 caracteres</span>
     </div>
 
     <div class="text-primary subheading">
@@ -37,8 +47,13 @@
         placeholder="Direccion"
         formControlName="direccion"
         required
-        autofocus
       />
+    </div>
+    <div
+      *ngIf="direccion.invalid && (direccion.dirty || direccion.touched)"
+      class="alert alert-danger"
+    >
+      <span>La direccion debe tener al menos 5 caracteres</span>
     </div>
     <div class="text-primary subheading">
       Email
@@ -50,19 +65,20 @@
         placeholder="E-mail"
         formControlName="email"
         required
-        autofocus
       />
+    </div>
+    <div
+      *ngIf="email.invalid && (email.dirty || email.touched)"
+      class="alert alert-danger mt-4"
+    >
+      <span>Formato de email inválido</span>
     </div>
 
     <!--<span class="text-primary">Taylo</span>-->
   </div>
   <!--<a href="mailto:name@email.com">name@email.com</a>-->
   <h4 class="mt-3">
-    <button
-      class="btn btn-danger m-2"
-      type="button"
-      (click)="handlerCancel()"
-    >
+    <button class="btn btn-danger m-2" type="button" (click)="handlerCancel()">
       Cancelar
       <i class="fa-solid fa-circle-xmark"></i>
     </button>

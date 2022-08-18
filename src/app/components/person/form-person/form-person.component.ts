@@ -117,8 +117,8 @@ export class FormPersonComponent implements OnInit {
         Validators.required,
       ]),
       email: new FormControl(person.email, [
-        Validators.minLength(5),
         Validators.required,
+        Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"),
       ]),
       direccion: new FormControl(person.direccion, [
         Validators.minLength(5),

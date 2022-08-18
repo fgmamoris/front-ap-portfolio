@@ -14,6 +14,14 @@
           autofocus
         />
       </div>
+      <div
+        *ngIf="
+          nombreCurso.invalid && (nombreCurso.dirty || nombreCurso.touched)
+        "
+        class="alert alert-danger mt-3"
+      >
+        <span>El nombre del curso debe tener al menos 5 caracteres</span>
+      </div>
       <div class="text-primary">
         Url del certificado (https://)
         <input
@@ -24,8 +32,16 @@
           placeholder="Url del certificado (https://www.ejemplo.com/ruta)"
           formControlName="urlCertificado"
           required
-          autofocus
         />
+      </div>
+      <div
+        *ngIf="
+          urlCertificado.invalid &&
+          (urlCertificado.dirty || urlCertificado.touched)
+        "
+        class="alert alert-danger mt-3"
+      >
+        <span>Debe ser una dirección válida</span>
       </div>
 
       <div class="text-primary" style="width: 250px">

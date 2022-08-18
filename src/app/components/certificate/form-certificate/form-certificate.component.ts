@@ -122,7 +122,7 @@ export class FormCertificateComponent implements OnInit {
         Validators.required,
       ]),
       urlCertificado: new FormControl(certificate.urlCertificado, [
-        Validators.minLength(5),
+        Validators.pattern('(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})'),
         Validators.required,
       ]),
       fecha: new FormControl(this.fechaString, [Validators.required]),
@@ -149,7 +149,7 @@ export class FormCertificateComponent implements OnInit {
 
   onChangeDate(): void {
     this.certificateDetailForm.fecha = this.form.get('fecha')!.value;
-    
+
     // some other important code here...
   }
   get nombreCurso() {

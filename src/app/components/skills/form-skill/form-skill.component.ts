@@ -37,7 +37,7 @@ export class FormSkillComponent implements OnInit {
         (data) => {
           this.form!.reset();
           this.handlerCancel();
-          
+
           this.router.navigate(['/']).then(() => {
             window.location.reload();
           });
@@ -63,7 +63,7 @@ export class FormSkillComponent implements OnInit {
         })
         .subscribe(
           (data) => {
-            
+
             this.form!.reset();
             this.handlerCancel();
             this.router.navigate(['/']).then(() => {
@@ -90,7 +90,7 @@ export class FormSkillComponent implements OnInit {
       this.skillService.getById(id).subscribe(
         (data) => {
           this.skillDetailForm = data;
-          
+
           this.constructForm(this.skillDetailForm);
         },
         (err) => {
@@ -109,10 +109,11 @@ export class FormSkillComponent implements OnInit {
   constructForm(skill: Skill): void {
     this.form = new FormGroup({
       nombreIcono: new FormControl(skill.nombreIcono, [
-        Validators.minLength(5),
+        Validators.pattern('fa-[a-zA-Z0-9-]+'),
         Validators.required,
       ]),
     });
+
   }
 
   get nombreIcono() {

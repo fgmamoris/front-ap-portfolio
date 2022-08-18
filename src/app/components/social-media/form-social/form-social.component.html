@@ -9,15 +9,22 @@
       <div class="text-primary">
         Icon fontawesome
         <input
-          type="text"
           name="nombreIcono"
           id="nombreIcono"
           class="form-control"
           placeholder="Ejemplo: fa-brands fa-github"
           formControlName="nombreIcono"
-          required
           autofocus
+          required
         />
+      </div>
+      <div
+        *ngIf="
+          nombreIcono.invalid && (nombreIcono.dirty || nombreIcono.touched)
+        "
+        class="alert alert-danger mt-3"
+      >
+        <span>El nombre del icono debe ser un nombre válido</span>
       </div>
       <div class="text-primary">
         Url Social Media
@@ -29,8 +36,15 @@
           placeholder="Ejemplo: http://www.github.com"
           formControlName="urlRedSocial"
           required
-          autofocus
         />
+      </div>
+      <div
+        *ngIf="
+          urlRedSocial.invalid && (urlRedSocial.dirty || urlRedSocial.touched)
+        "
+        class="alert alert-danger mt-3"
+      >
+        <span>Debe ser una dirección válida</span>
       </div>
       <h4 class="mt-3">
         <button

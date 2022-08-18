@@ -12,7 +12,6 @@
           placeholder="Institución"
           formControlName="institucion"
           required
-          autofocus
         />
       </h3>
       <div
@@ -23,9 +22,6 @@
       >
         <span>La institución debe tener al menos 5 caracteres</span>
       </div>
-      <span *ngIf="this.form.get('institucion')?.errors?.['required']">
-        (La institución no puede quedar vacía)
-      </span>
       <div class="subheading text-primary mb-2">
         Titulo
         <input
@@ -36,7 +32,6 @@
           placeholder="Titulo"
           formControlName="titulo"
           required
-          autofocus
         />
       </div>
       <div
@@ -45,10 +40,6 @@
       >
         <span>El titulo debe tener al menos 5 caracteres</span>
       </div>
-      <span *ngIf="this.form.get('titulo')?.errors?.['required']">
-        (El título no puede quedar vacío)
-      </span>
-
       <div class="subheading text-primary">
         Descripción
         <textarea
@@ -81,7 +72,7 @@
       </h4>
     </div>
     <div class="flex-shrink-1 ms-3 mt-2">
-      <div style="width: 150px">
+      <div style="width: 160px">
         <span class="text-primary">Desde</span>
         <input
           type="date"
@@ -95,7 +86,7 @@
           (change)="onDateChangeStart()"
         />
       </div>
-      <div style="width: 150px" class="mt-md-3">
+      <div style="width: 160px" class="mt-md-3">
         <span class="text-primary">Hasta</span>
         <input
           type="date"
@@ -109,7 +100,6 @@
           (change)="onDateChangeEnd()"
         />
       </div>
-     
     </div>
   </div>
 </form>

@@ -7,10 +7,15 @@
       class="form-control"
       formControlName="descripcion"
       placeholder="Una breve descripcion de la persona"
-      autofocus
       required
       rows="3"
     ></textarea>
+  </div>
+  <div
+    *ngIf="descripcion.invalid && (descripcion.dirty || descripcion.touched)"
+    class="alert alert-danger mt-4"
+  >
+    <span>La descripcion debe tener al menos 5 caracteres</span>
   </div>
   <h4 class="mt-3">
     <button class="btn btn-danger m-2" type="button" (click)="handlerCancel()">

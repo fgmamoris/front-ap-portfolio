@@ -19,7 +19,7 @@ export class ExperienceItemComponent implements OnInit {
     private tokenService: TokenService,
     private experienceService: ExperienceService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getToken();
@@ -43,7 +43,7 @@ export class ExperienceItemComponent implements OnInit {
         });
       },
       (err) => {
-        
+
         this.errMsj = err.error.mensaje;
         /*this.toastr.error(this.errMsj, 'Fail', {
         timeOut: 3000,
@@ -56,17 +56,12 @@ export class ExperienceItemComponent implements OnInit {
   getfecha(date: Date): String {
     return date !== null
       ? `${new Date(date).toISOString().slice(6, 7)} - ${new Date(date)
-          .toISOString()
-          .slice(0, 4)}`
+        .toISOString()
+        .slice(0, 4)}`
       : '';
   }
 
   convertDateToNameMonth(date: Date): String {
-    // date.setMonth(monthNumber - 1);
-
-    // return date.toLocaleString('en-US', {
-    //   month: 'long',
-    // });
     const monthNames = [
       'Enero',
       'Febrero',
@@ -81,15 +76,9 @@ export class ExperienceItemComponent implements OnInit {
       'Noviembre',
       'Diciembre',
     ];
-
-    return `${monthNames[new Date(date).getMonth()]} ${new Date(
-      date
-    ).getFullYear()}`;
-    //return monthNames[date.getMonth()];
-    // return date !== null
-    //   ? `${new Date(date).toISOString().slice(6, 7)} - ${new Date(date)
-    //       .toISOString()
-    //       .slice(0, 4)}`
-    //   : '';
+    var date1 = date.toString()
+    var numberOfMonth = +date1.slice(5, 7)
+    var numberOfYear = +date1.slice(0, 4)
+    return `${monthNames[numberOfMonth - 1]} ${numberOfYear}`;
   }
 }

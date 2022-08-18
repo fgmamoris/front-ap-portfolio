@@ -20,15 +20,6 @@
             ><i class="fa-solid fa-circle-plus"></i
           ></span>
         </p>
-        <!--<p *ngIf="!exitsPerson">Deberá ingresar datos de la persona primero</p>
-      <div *ngIf="exitsPerson && certificates?.length === 0">
-        <p>No hay certificados cargadas en el sistema</p>
-        <h4 *ngIf="exitsPerson">
-          <span (click)="handlerForm(idEdit)"
-            ><i class="fa-solid fa-circle-plus"></i
-          ></span>
-        </h4>
-      </div>-->
       </div>
       <div *ngIf="isLogged && !addForm && certificates.length !== 0">
         <h4 class="px-3">
@@ -37,20 +28,6 @@
           ></span>
         </h4>
       </div>
-
-      <!--    <p *ngIf="certificates?.length == 0">
-      No hay certificados cargados en el sistema
-      <span *ngIf="exitsPerson" (click)="handlerForm(0)"
-        ><i class="fa-solid fa-circle-plus"></i
-      ></span>
-    </p>
-
-    <h3 class="ms-2" *ngIf="!addForm && isLogged">
-      <span (click)="handlerForm(0)"
-        ><i class="fa-solid fa-circle-plus"></i
-      ></span>
-    </h3>
-    -->
 
       <ul class="fa-ul mb-0" *ngIf="!addForm">
         <li *ngFor="let certificate of certificates; let i = index">

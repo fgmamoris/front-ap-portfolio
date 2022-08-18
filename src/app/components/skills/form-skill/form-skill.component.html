@@ -11,8 +11,16 @@
           placeholder="Nombre del icono fab fa-"
           formControlName="nombreIcono"
           required
-          autofocus
+          
         />
+      </div>
+      <div
+        *ngIf="
+        nombreIcono.invalid && (nombreIcono.dirty || nombreIcono.touched)
+        "
+        class="alert alert-danger mt-3"
+      >
+        <span>Debe ser un nombre de icono válido</span>
       </div>
       <h4 class="mt-3">
         <button

@@ -23,11 +23,8 @@
         *ngIf="puesto.invalid && (puesto.dirty || puesto.touched)"
         class="alert alert-danger"
       >
-        <span>La puesto debe tener al menos 5 caracteres</span>
+        <span>La institución debe tener al menos 5 caracteres</span>
       </div>
-      <span *ngIf="this.form.get('puesto')?.errors?.['required']">
-        (La puesto no puede quedar vacía)
-      </span>
       <div class="subheading text-primary mb-2">
         Compañia
         <input
@@ -46,9 +43,6 @@
       >
         <span>La compañia debe tener al menos 5 caracteres</span>
       </div>
-      <span *ngIf="this.form.get('titulo')?.errors?.['required']">
-        (La compañia no puede quedar vacío)
-      </span>
 
       <div class="subheading text-primary">
         Descripción
@@ -81,8 +75,8 @@
         </button>
       </h4>
     </div>
-    <div class="flex-shrink-1 ms-3 mt-2">
-      <div style="width: 150px">
+    <div class="flex-shrink-1 ms-3 mt-3">
+      <div style="width: 160px">
         <span class="text-primary">Desde</span>
         <input
           type="date"
@@ -95,7 +89,7 @@
           (change)="onDateChangeStart()"
         />
       </div>
-      <div style="width: 150px" class="mt-md-3">
+      <div style="width: 160px" class="mt-md-3">
         <span class="text-primary">Hasta</span>
         <input
           type="date"
@@ -107,17 +101,7 @@
           (change)="onDateChangeEnd()"
         />
       </div>
-      <div
-        class="text-primary mt-3"
-        style="
-          padding: 0.5rem;
-          border-radius: 1px;
-          border-top: 1px solid #c00;
-          border-right: 1px solid #c00;
-          border-bottom: 1px solid #c00;
-          border-left: 1px solid #c00;
-        "
-      >
+      <div class="text-primary mt-3" style="padding: 0.5rem">
         Trabajo actual
         <input
           type="checkbox"

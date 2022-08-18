@@ -1,10 +1,4 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { PersonDetail } from '../../interfaces/personDetail';
-import { LoginUser } from '../../models/loginUser';
-import { AuthService } from '../../services/auth.service';
-import { PersonService } from '../../services/person.service';
 import { TokenService } from '../../services/token.service';
 
 @Component({
@@ -15,7 +9,7 @@ import { TokenService } from '../../services/token.service';
 export class IndexComponent implements OnInit {
   isLogged = false;
 
-  constructor(private tokenService: TokenService) {}
+  constructor(private tokenService: TokenService) { }
 
   ngOnInit(): void {
     if (this.tokenService.getToken()) {

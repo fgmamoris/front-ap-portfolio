@@ -19,7 +19,7 @@ export class CertificateItemComponent implements OnInit {
     private tokenService: TokenService,
     private certificateService: CertificateService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getToken();
@@ -44,7 +44,7 @@ export class CertificateItemComponent implements OnInit {
         });
       },
       (err) => {
-        
+
         this.errMsj = err.error.mensaje;
         /*this.toastr.error(this.errMsj, 'Fail', {
         timeOut: 3000,
@@ -56,11 +56,6 @@ export class CertificateItemComponent implements OnInit {
   }
 
   convertDateToNameMonth(date: Date): String {
-    // date.setMonth(monthNumber - 1);
-
-    // return date.toLocaleString('en-US', {
-    //   month: 'long',
-    // });
     const monthNames = [
       'Enero',
       'Febrero',
@@ -75,15 +70,9 @@ export class CertificateItemComponent implements OnInit {
       'Noviembre',
       'Diciembre',
     ];
-
-    return `${monthNames[new Date(date).getMonth()]} ${new Date(
-      date
-    ).getFullYear()}`;
-    //return monthNames[date.getMonth()];
-    // return date !== null
-    //   ? `${new Date(date).toISOString().slice(6, 7)} - ${new Date(date)
-    //       .toISOString()
-    //       .slice(0, 4)}`
-    //   : '';
+    var date1 = date.toString()
+    var numberOfMonth = +date1.slice(5, 7)
+    var numberOfYear = +date1.slice(0, 4)
+    return `${monthNames[numberOfMonth - 1]} ${numberOfYear}`;
   }
 }

@@ -18,6 +18,10 @@ export class FormSocialComponent implements OnInit {
   socialDetailForm!: SocialMedia;
   resultado!: string;
   form!: FormGroup;
+  //reg: string = '(https?: \/\/)?(www\.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)|(https?:\/\/)?(www\.)?(?!ww)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)'
+  reg: string = '@^(http\:\/\/|https\:\/\/)?([a-z0-9][a-z0-9\-]*\.)+[a-z0-9][a-z0-9\-]*$@i'
+
+
 
   constructor(
     private socialService: SocialMediaService,
@@ -66,7 +70,7 @@ export class FormSocialComponent implements OnInit {
         })
         .subscribe(
           (data) => {
-            
+
             this.form!.reset();
             this.handlerCancel();
             this.router.navigate(['/']).then(() => {
@@ -93,7 +97,7 @@ export class FormSocialComponent implements OnInit {
       this.socialService.getSocialById(id).subscribe(
         (data) => {
           this.socialDetailForm = data;
-          
+
           this.constructForm(this.socialDetailForm);
         },
         (err) => {
@@ -110,11 +114,11 @@ export class FormSocialComponent implements OnInit {
   constructForm(social: SocialMedia): void {
     this.form = new FormGroup({
       nombreIcono: new FormControl(social.nombreIcono, [
-        Validators.minLength(5),
+        Validators.pattern('fa-[a-zA-Z0-9-]+'),
         Validators.required,
       ]),
       urlRedSocial: new FormControl(social.urlRedSocial, [
-        Validators.minLength(5),
+        Validators.pattern('(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})'),
         Validators.required,
       ]),
     });

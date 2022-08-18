@@ -1,0 +1,55 @@
+<form
+  (ngSubmit)="onSubmit(form.value)"
+  [formGroup]="form"
+  novalidate
+  #f="ngForm"
+>
+  <div class="d-flex flex-column flex-md-row justify-content-between mb-3">
+    <div class="flex-grow-1">
+      <div class="text-primary">
+        Icon fontawesome
+        <input
+          type="text"
+          name="nombreIcono"
+          id="nombreIcono"
+          class="form-control"
+          placeholder="Ejemplo: fa-brands fa-github"
+          formControlName="nombreIcono"
+          required
+          autofocus
+        />
+      </div>
+      <div class="text-primary">
+        Url Social Media
+        <input
+          type="text"
+          name="urlRedSocial"
+          id="urlRedSocial"
+          class="form-control"
+          placeholder="Ejemplo: http://www.github.com"
+          formControlName="urlRedSocial"
+          required
+          autofocus
+        />
+      </div>
+      <h4 class="mt-3">
+        <button
+          class="btn btn-danger m-2"
+          type="button"
+          (click)="handlerCancel(0)"
+        >
+          Cancelar
+          <i class="fa-solid fa-circle-xmark"></i>
+        </button>
+        <button
+          class="btn btn-success m-2"
+          type="submit"
+          [disabled]="form.invalid"
+        >
+          Confirmar
+          <i class="fa-solid fa-circle-check"></i>
+        </button>
+      </h4>
+    </div>
+  </div>
+</form>

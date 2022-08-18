@@ -1,0 +1,25 @@
+<div class="d-flex flex-column flex-md-row justify-content-between mb-3">
+  <div class="flex-grow-1">
+    <!--
+  {{experience.position}}
+  -->
+    <h3 class="mb-0">{{ educationItem.institucion }}</h3>
+    <div class="subheading mb-3">{{ educationItem.titulo }}</div>
+    <p>{{ educationItem.descripcion }}</p>
+  </div>
+
+  <div class="flex-shrink-0">
+    <span class="text-primary">
+      {{ convertDateToNameMonth(educationItem.fechaInicio!) }} -
+      {{ convertDateToNameMonth(educationItem.fechaFin!) }}
+    </span>
+    <div class="text-end" *ngIf="isLogged">
+      <span (click)="handlerEdit(educationItem.id)">
+        <i class="fa-solid fa-pen-to-square ms-1"></i>
+      </span>
+      <span (click)="handlerRemove(educationItem.id)">
+        <i class="fa-solid fa-trash-can ms-1" style="color: darkred"></i>
+      </span>
+    </div>
+  </div>
+</div>

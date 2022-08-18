@@ -1,0 +1,34 @@
+<!-- Interests-->
+<section class="resume-section" id="interests">
+  <div class="resume-section-content">
+    <h2 class="mb-2">Interes</h2>
+    <app-form-interest
+      *ngIf="isLogged && addForm; else rest"
+      [handlerCancel]="handlerForm"
+      [personId]="personId"
+      [exitsInterest]="exitsInterest"
+    ></app-form-interest>
+
+    <ng-template #rest
+      ><div>
+        <p>
+          {{ interest.descripcion }}
+        </p>
+        <p *ngIf="personId !== 0 && !exitsInterest">
+          No hay datos cargados en el sistema
+          <span *ngIf="!addForm && isLogged" (click)="handlerForm()"
+            ><i class="fa-solid fa-circle-plus"></i
+          ></span>
+        </p>
+      </div>
+      <div
+        class="text-start mb-4"
+        *ngIf="isLogged && !addForm && exitsInterest"
+      >
+        <span (click)="handlerForm()">
+          <i class="fa-solid fa-pen-to-square ms-1"></i>
+        </span></div
+    ></ng-template>
+  </div>
+</section>
+<hr class="m-0" />

@@ -1,0 +1,21 @@
+<div>
+  <app-form-about
+    *ngIf="isLogged && addForm"
+    [handlerCancel]="handlerForm"
+    [personId]="personId"
+    [exitsAbout]="exitsAbout"
+  ></app-form-about>
+  <p *ngIf="!addForm">
+    {{ about.descripcion }}
+    <span
+      *ngIf="!addForm && isLogged && personId !== 0 && !exitsAbout"
+      (click)="handlerForm()"
+      ><i class="fa-solid fa-circle-plus"></i
+    ></span>
+  </p>
+</div>
+<div class="text-start mb-4" *ngIf="isLogged && !addForm && exitsAbout">
+  <span (click)="handlerForm()">
+    <i class="fa-solid fa-pen-to-square ms-1"></i>
+  </span>
+</div>

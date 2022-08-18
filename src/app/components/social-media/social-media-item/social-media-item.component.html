@@ -1,0 +1,19 @@
+<a class="social-icon" target="_blank" href="{{ socialItem.urlRedSocial }}"
+  ><i class="{{ socialItem.nombreIcono }}"></i>
+</a>
+<span
+  style="
+    font-size: 14px;
+    margin-left: -1.5rem;
+    position: relative;
+    bottom: -0.9rem;
+  "
+  ><span *ngIf="isLogged">
+    <span (click)="handlerEdit(socialItem.id)"
+      ><i class="fa-solid fa-pen-to-square ms-1"></i
+    ></span>
+    <span (click)="handlerRemove(socialItem.id)"
+      ><i class="fa-solid fa-trash-can ms-1" style="color: darkred"></i
+    ></span>
+  </span>
+</span>

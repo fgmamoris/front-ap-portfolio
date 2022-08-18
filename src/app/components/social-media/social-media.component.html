@@ -1,0 +1,140 @@
+<section class="social-icons" id="social-media-icons">
+  <div *ngIf="addForm && isLogged; else rest">
+    <app-form-social
+      [handlerCancel]="handlerForm"
+      [personId]="personId"
+      [idSocial]="idEdit"
+    >
+    </app-form-social>
+  </div>
+  <ng-template #rest>
+    <div>
+      <p *ngIf="personId === 0">
+        Deberá ingresar primero la persona para poder cargar las redes sociales
+      </p>
+      <p *ngIf="personId !== 0 && socials.length === 0">
+        No hay redes sociales cargadas en el sistema
+        <span *ngIf="isLogged" (click)="handlerForm(idEdit)"
+          ><i class="fa-solid fa-circle-plus"></i
+        ></span>
+      </p>
+    </div>
+
+    <ul class="list-inline dev-icons">
+      <li
+        class="list-inline-item"
+        *ngFor="let social of socials; let i = index"
+      >
+        <app-social-media-item
+          *ngIf="!addForm"
+          [handlerEdit]="handlerForm"
+          [socialItem]="social"
+        ></app-social-media-item>
+      </li>
+      <li
+        *ngIf="isLogged && !addForm && socials.length !== 0"
+        class="list-inline-item"
+      >
+        <span (click)="handlerForm(idEdit)" class="social-icon"
+          ><a><i class="fa-solid fa-circle-plus"></i></a
+        ></span>
+      </li>
+    </ul>
+  </ng-template>
+</section>
+
+<!--
+    <ul class="list-inline dev-icons" *ngIf="!isEditing && !addSocialMedia">
+    <li class="list-inline-item">
+      <a class="social-icon" href="#!"><i class="fab fa-linkedin-in"></i></a>
+      <span
+        style="
+          font-size: 14px;
+          margin-left: -1.5rem;
+          position: relative;
+          bottom: -0.9rem;
+        "
+        ><span *ngIf="isLogged">
+          <span (click)="handlerEditView()"
+            ><i class="fa-solid fa-pen-to-square ms-1"></i
+          ></span>
+          <span (click)="handlerRemove(1)"
+            ><i class="fa-solid fa-trash-can ms-1" style="color: darkred"></i
+          ></span>
+        </span>
+      </span>
+    </li>
+    <li class="list-inline-item">
+      <a class="social-icon" href="#!"><i class="fab fa-github"></i></a>
+      <span
+        style="
+          font-size: 14px;
+          margin-left: -1.5rem;
+          position: relative;
+          bottom: -0.9rem;
+        "
+      >
+        <i class="fa-solid fa-pen-to-square ms-1"></i>
+        <i class="fa-solid fa-trash-can ms-1" style="color: darkred"></i>
+      </span>
+    </li>
+    <li class="list-inline-item">
+      <a class="social-icon" href="#!"><i class="fab fa-twitter"></i></a>
+      <span
+        style="
+          font-size: 14px;
+          margin-left: -1.5rem;
+          position: relative;
+          bottom: -0.9rem;
+        "
+      >
+        <i class="fa-solid fa-pen-to-square ms-1"></i>
+        <i class="fa-solid fa-trash-can ms-1" style="color: darkred"></i>
+      </span>
+    </li>
+    <li class="list-inline-item">
+      <a class="social-icon" href="#!"><i class="fab fa-facebook"></i></a>
+      <span
+        style="
+          font-size: 14px;
+          margin-left: -1.5rem;
+          position: relative;
+          bottom: -0.9rem;
+        "
+      >
+        <i class="fa-solid fa-pen-to-square ms-1"></i>
+        <i class="fa-solid fa-trash-can ms-1" style="color: darkred"></i>
+      </span>
+    </li>
+    <li class="list-inline-item">
+      <a class="social-icon" href="#!"><i class="fab fa-gitlab"></i></a>
+      <span
+        style="
+          font-size: 14px;
+          margin-left: -1.5rem;
+          position: relative;
+          bottom: -0.9rem;
+        "
+      >
+        <i class="fa-solid fa-pen-to-square ms-1"></i>
+        <i class="fa-solid fa-trash-can ms-1" style="color: darkred"></i>
+      </span>
+    </li>
+  </ul>
+  <div class="social-icons ">
+  <a class="social-icon mb-4" href="#!"><i class="fab fa-linkedin-in"></i></a>
+  <a class="social-icon" href="#!"><i class="fab fa-github"></i></a>
+  <a class="social-icon" href="#!"><i class="fab fa-twitter"></i></a>
+  <a class="social-icon" href="#!"><i class="fab fa-facebook-f"></i></a>
+  <a class="social-icon" href="#!"><i class="fab fa-facebook-f"></i></a>
+  <a class="social-icon" href="#!"><i class="fab fa-facebook-f"></i></a>
+  <a class="social-icon" href="#!"><i class="fab fa-facebook-f"></i></a
+  ><a class="social-icon" href="#!"><i class="fab fa-facebook-f"></i></a
+  ><a class="social-icon" href="#!"><i class="fab fa-facebook-f"></i></a
+  ><a class="social-icon" href="#!"><i class="fab fa-facebook-f"></i></a
+  ><a class="social-icon" href="#!"><i class="fab fa-facebook-f"></i></a
+  ><a class="social-icon" href="#!"><i class="fab fa-facebook-f"></i></a
+  ><a class="social-icon" href="#!"><i class="fab fa-facebook-f"></i></a
+  ><a class="social-icon" href="#!"><i class="fab fa-facebook-f"></i></a>
+</div>
+-->

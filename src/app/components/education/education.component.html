@@ -1,0 +1,40 @@
+<!-- Education-->
+<section class="resume-section" id="education">
+  <div class="resume-section-content">
+    <h2 class="mb-2">Education</h2>
+    <app-form-education
+      *ngIf="addForm && isLogged; else rest"
+      [handlerCancel]="handlerForm"
+      [idEducation]="editId"
+      [personId]="personId"
+    >
+    </app-form-education>
+    <ng-template #rest>
+      <p *ngIf="personId === 0">
+        Deberá ingresar primero la persona para poder cargar la educacion
+      </p>
+      <p *ngIf="personId !== 0 && educations?.length == 0">
+        No hay datos cargados en el sistema
+        <span *ngIf="!addForm && isLogged" (click)="handlerForm(0)"
+          ><i class="fa-solid fa-circle-plus"></i
+        ></span>
+      </p>
+      <h3 class="ms-2">
+        <span
+          (click)="handlerForm(0)"
+          *ngIf="!addForm && isLogged && educations?.length !== 0"
+          ><i class="fa-solid fa-circle-plus"></i
+        ></span>
+      </h3>
+
+      <div *ngFor="let education of educations; let i = index">
+        <app-education-item
+          *ngIf="!addForm"
+          [educationItem]="education"
+          [handlerEdit]="handlerForm"
+        >
+        </app-education-item></div
+    ></ng-template>
+  </div>
+</section>
+<hr class="m-0" />

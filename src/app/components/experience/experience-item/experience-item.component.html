@@ -1,0 +1,30 @@
+<div class="d-flex flex-column flex-md-row justify-content-between mb-3">
+  <div class="flex-grow-1">
+    <!--
+    {{experience.position}}
+    -->
+    <h3 class="mb-0">{{ experienceItem.puesto }}</h3>
+    <div class="subheading mb-3">{{ experienceItem.compania }}</div>
+    <p>{{ experienceItem.descripcion }}</p>
+  </div>
+
+  <div class="flex-shrink-0">
+    <span class="text-primary">
+      {{ convertDateToNameMonth(experienceItem.fechaInicio!) }} -
+    </span>
+    <span class="text-primary" *ngIf="!experienceItem.actual; else esActual">
+      {{ convertDateToNameMonth(experienceItem.fechaFin!) }}
+    </span>
+    <ng-template #esActual>
+      <span #esActual class="text-primary"> Actualidad </span>
+    </ng-template>
+    <div class="text-end" *ngIf="isLogged">
+      <span (click)="handlerEdit(experienceItem.id)">
+        <i class="fa-solid fa-pen-to-square ms-1"></i>
+      </span>
+      <span (click)="handlerRemove(experienceItem.id)">
+        <i class="fa-solid fa-trash-can ms-1" style="color: darkred"></i>
+      </span>
+    </div>
+  </div>
+</div>

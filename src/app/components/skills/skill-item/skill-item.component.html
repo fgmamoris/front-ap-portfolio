@@ -1,0 +1,9 @@
+<i class="{{ skillItem.nombreIcono }}"></i>
+<div style="display: inline-block" *ngIf="isLogged">
+  <span (click)="handlerEdit(skillItem.id)" style="font-size: 14px"
+    ><i class="fa-solid fa-pen-to-square ms-1">{{ skillItem.id }}</i></span
+  >
+  <span (click)="handlerRemove(skillItem.id)" style="font-size: 14px"
+    ><i class="fa-solid fa-trash-can ms-1" style="color: darkred"></i
+  ></span>
+</div>

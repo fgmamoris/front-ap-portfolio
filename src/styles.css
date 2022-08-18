@@ -11814,6 +11814,16 @@ section.resume-section .resume-section-content {
   }
 }
 
+@media (min-width: 1470px) {
+  section.resume-section {
+    padding-left: 3rem;
+    padding-right: 3rem;
+    padding-top: 5rem;
+    padding-bottom: 5rem;    
+    max-width: 100rem;
+  }
+}
+
 /**
 * VALIDACION FORMULARIOS
 */

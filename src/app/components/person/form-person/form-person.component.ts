@@ -1,8 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { PersonDetail } from 'src/app/interfaces/personDetail';
 import { PersonService } from 'src/app/services/person.service';
+
 
 @Component({
   selector: 'app-person-form',
@@ -19,7 +21,8 @@ export class FormPersonComponent implements OnInit {
 
   constructor(
     private personDetailService: PersonService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService,
   ) {
     this.personDetailForm = {
       id: 0,
@@ -41,12 +44,12 @@ export class FormPersonComponent implements OnInit {
         (data) => {
           this.form!.reset();
           this.handlerCancel();
+          this.toastr.success('Persona Agregada', 'OK', {
+            timeOut: 3000, positionClass: 'toast-top-center'
+          });
           this.router.navigate(['/']).then(() => {
             window.location.reload();
           });
-          /*this.toastr.success('Producto Creado', 'OK', {
-            timeOut: 3000, positionClass: 'toast-top-center'
-          });*/
           //this.router.navigate(['/lista']);
         },
         (err) => {
@@ -63,23 +66,30 @@ export class FormPersonComponent implements OnInit {
         .updatePerson({ ...person, id: this.personDetailForm.id })
         .subscribe(
           (data) => {
+            this.toastr.success('Edición correcta', 'OK', {
+              timeOut: 1500, positionClass: 'toast-top-center'
+            });
             this.form!.reset();
             this.handlerCancel();
-            this.router.navigate(['/']).then(() => {
-              window.location.reload();
-            });
-            /*this.toastr.success('Producto Creado', 'OK', {
-          timeOut: 3000, positionClass: 'toast-top-center'
-        });*/
-            //this.router.navigate(['/lista']);
+            setTimeout(() => {
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            }, 1500);
+
+
           },
           (err) => {
             console.log(err.error.mensaje);
-            /*this.toastr.error(err.error.mensaje, 'Fail', {
-          timeOut: 3000,  positionClass: 'toast-top-center',
-        });
-        // this.router.navigate(['/']);
-        */
+            this.toastr.error(err.error.mensaje, 'Fail', {
+              timeOut: 1500, positionClass: 'toast-top-center',
+            });
+            setTimeout(() => {
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            }, 1500);
+
           }
         );
     }
@@ -109,7 +119,7 @@ export class FormPersonComponent implements OnInit {
   constructForm(person: PersonDetail): void {
     this.form = new FormGroup({
       nombre: new FormControl(person.nombre, [
-        Validators.minLength(5),
+        Validators.minLength(3),
         Validators.required,
       ]),
       apellido: new FormControl(person.apellido, [

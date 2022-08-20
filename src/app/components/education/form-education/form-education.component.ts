@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Education } from 'src/app/interfaces/education';
 import { EducationService } from 'src/app/services/education.service';
 
@@ -22,7 +23,7 @@ export class FormEducationComponent implements OnInit {
 
   constructor(
     private educationService: EducationService,
-    private router: Router
+    private router: Router, private toastr: ToastrService
   ) {
     this.educationItemForm = {
       id: 0,
@@ -87,23 +88,30 @@ export class FormEducationComponent implements OnInit {
         })
         .subscribe(
           (data) => {
+            this.toastr.success('Edición correcta', 'OK', {
+              timeOut: 1500, positionClass: 'toast-top-center'
+            });
             this.form!.reset();
             this.handlerCancel();
-            this.router.navigate(['/']).then(() => {
-              window.location.reload();
-            });
-            /*this.toastr.success('Producto Creado', 'OK', {
-          timeOut: 3000, positionClass: 'toast-top-center'
-        });*/
-            //this.router.navigate(['/lista']);
+            setTimeout(() => {
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            }, 1500);
+
+
           },
           (err) => {
             console.log(err.error.mensaje);
-            /*this.toastr.error(err.error.mensaje, 'Fail', {
-          timeOut: 3000,  positionClass: 'toast-top-center',
-        });
-        // this.router.navigate(['/']);
-        */
+            this.toastr.error(err.error.mensaje, 'Fail', {
+              timeOut: 1500, positionClass: 'toast-top-center',
+            });
+            setTimeout(() => {
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            }, 1500);
+
           }
         );
     }

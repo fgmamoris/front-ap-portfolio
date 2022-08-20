@@ -8,12 +8,13 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {  
+export class AuthService {
   private authURL = environment.apiUrl;
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
 
   public login(loginUsuario: LoginUser): Observable<JwtDto> {
     return this.httpClient.post<JwtDto>(this.authURL + '/auth/login', loginUsuario);
+    //return this.httpClient.post<JwtDto>(this.authURL + '/jwt/get', loginUsuario);
   }
 }

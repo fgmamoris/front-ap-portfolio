@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 import { Skill } from 'src/app/interfaces/skill';
 import { SkillService } from 'src/app/services/skill.service';
@@ -19,7 +20,7 @@ export class FormSkillComponent implements OnInit {
   resultado!: string;
   form!: FormGroup;
 
-  constructor(private skillService: SkillService, private router: Router) {
+  constructor(private skillService: SkillService, private router: Router, private toastr: ToastrService) {
     this.skillDetailForm = {
       id: 0,
       nombreIcono: '',
@@ -64,23 +65,30 @@ export class FormSkillComponent implements OnInit {
         .subscribe(
           (data) => {
 
+            this.toastr.success('Edición correcta', 'OK', {
+              timeOut: 1500, positionClass: 'toast-top-center'
+            });
             this.form!.reset();
             this.handlerCancel();
-            this.router.navigate(['/']).then(() => {
-              window.location.reload();
-            });
-            /*this.toastr.success('Producto Creado', 'OK', {
-            timeOut: 3000, positionClass: 'toast-top-center'
-          });*/
-            //this.router.navigate(['/lista']);
+            setTimeout(() => {
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            }, 1500);
+
+
           },
           (err) => {
             console.log(err.error.mensaje);
-            /*this.toastr.error(err.error.mensaje, 'Fail', {
-            timeOut: 3000,  positionClass: 'toast-top-center',
-          });
-          // this.router.navigate(['/']);
-          */
+            this.toastr.error(err.error.mensaje, 'Fail', {
+              timeOut: 1500, positionClass: 'toast-top-center',
+            });
+            setTimeout(() => {
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            }, 1500);
+
           }
         );
     }
@@ -109,7 +117,8 @@ export class FormSkillComponent implements OnInit {
   constructForm(skill: Skill): void {
     this.form = new FormGroup({
       nombreIcono: new FormControl(skill.nombreIcono, [
-        Validators.pattern('fa-[a-zA-Z0-9-]+'),
+        //Validators.pattern('fa-[a-zA-Z0-9-]+'),
+        Validators.minLength(5),
         Validators.required,
       ]),
     });

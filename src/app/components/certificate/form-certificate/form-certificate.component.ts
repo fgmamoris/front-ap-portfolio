@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Certificate } from 'src/app/interfaces/certificate';
 import { CertificateService } from 'src/app/services/certificate.service';
 
@@ -21,7 +22,7 @@ export class FormCertificateComponent implements OnInit {
 
   constructor(
     private certificateService: CertificateService,
-    private router: Router
+    private router: Router, private toastr: ToastrService
   ) {
     this.certificateDetailForm = {
       id: 0,
@@ -42,14 +43,14 @@ export class FormCertificateComponent implements OnInit {
         .addCertificate(certificate, this.personId)
         .subscribe(
           (data) => {
-            this.form!.reset();
-            this.handlerCancel();
-            this.router.navigate(['/']).then(() => {
-              window.location.reload();
-            });
-            /*this.toastr.success('Producto Creado', 'OK', {
-            timeOut: 3000, positionClass: 'toast-top-center'
-          });*/
+            /* this.form!.reset();
+             this.handlerCancel();
+             this.router.navigate(['/']).then(() => {
+               window.location.reload();
+             });
+             /*this.toastr.success('Producto Creado', 'OK', {
+             timeOut: 3000, positionClass: 'toast-top-center'
+           });*/
             //this.router.navigate(['/lista']);
           },
           (err) => {
@@ -69,23 +70,30 @@ export class FormCertificateComponent implements OnInit {
         })
         .subscribe(
           (data) => {
+            this.toastr.success('Edición correcta', 'OK', {
+              timeOut: 1500, positionClass: 'toast-top-center'
+            });
             this.form!.reset();
             this.handlerCancel();
-            this.router.navigate(['/']).then(() => {
-              window.location.reload();
-            });
-            /*this.toastr.success('Producto Creado', 'OK', {
-            timeOut: 3000, positionClass: 'toast-top-center'
-          });*/
-            //this.router.navigate(['/lista']);
+            setTimeout(() => {
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            }, 1500);
+
+
           },
           (err) => {
             console.log(err.error.mensaje);
-            /*this.toastr.error(err.error.mensaje, 'Fail', {
-            timeOut: 3000,  positionClass: 'toast-top-center',
-          });
-          // this.router.navigate(['/']);
-          */
+            this.toastr.error(err.error.mensaje, 'Fail', {
+              timeOut: 1500, positionClass: 'toast-top-center',
+            });
+            setTimeout(() => {
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            }, 1500);
+
           }
         );
     }

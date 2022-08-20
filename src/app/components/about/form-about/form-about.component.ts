@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { About } from 'src/app/interfaces/about';
 import { AboutService } from 'src/app/services/about.service';
 
@@ -18,7 +19,7 @@ export class FormAboutComponent implements OnInit {
   resultado!: string;
   form!: FormGroup;
 
-  constructor(private aboutService: AboutService, private router: Router) {
+  constructor(private aboutService: AboutService, private router: Router, private toastr: ToastrService) {
     this.AboutDetailForm = {
       id: 0,
       descripcion: '',
@@ -34,7 +35,7 @@ export class FormAboutComponent implements OnInit {
     if (!this.exitsAbout) {
       this.aboutService.addAbout(about, this.personId).subscribe(
         (data) => {
-          
+
           this.form!.reset();
           this.handlerCancel();
           this.router.navigate(['/']).then(() => {
@@ -62,24 +63,31 @@ export class FormAboutComponent implements OnInit {
         })
         .subscribe(
           (data) => {
-            
+
+            this.toastr.success('Edición correcta', 'OK', {
+              timeOut: 1500, positionClass: 'toast-top-center'
+            });
             this.form!.reset();
             this.handlerCancel();
-            this.router.navigate(['/']).then(() => {
-              window.location.reload();
-            });
-            /*this.toastr.success('Producto Creado', 'OK', {
-            timeOut: 3000, positionClass: 'toast-top-center'
-          });*/
-            //this.router.navigate(['/lista']);
+            setTimeout(() => {
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            }, 1500);
+
+
           },
           (err) => {
             console.log(err.error.mensaje);
-            /*this.toastr.error(err.error.mensaje, 'Fail', {
-            timeOut: 3000,  positionClass: 'toast-top-center',
-          });
-          // this.router.navigate(['/']);
-          */
+            this.toastr.error(err.error.mensaje, 'Fail', {
+              timeOut: 1500, positionClass: 'toast-top-center',
+            });
+            setTimeout(() => {
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            }, 1500);
+
           }
         );
     }
@@ -103,7 +111,7 @@ export class FormAboutComponent implements OnInit {
     }
   }
   constructForm(about: About): void {
-    
+
     this.form = new FormGroup({
       descripcion: new FormControl(about.descripcion, [
         Validators.minLength(5),

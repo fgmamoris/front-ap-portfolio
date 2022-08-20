@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoginUser } from '../../models/loginUser';
-import { AuthService } from '../../services/auth.service';
-import { TokenService } from '../../services/token.service';
+import { LoginUser } from '../models/loginUser';
+import { AuthService } from '../services/auth.service';
+import { TokenService } from '../services/token.service';
 //import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -16,19 +16,17 @@ export class LoginComponent implements OnInit {
   loginUserModel!: LoginUser;
   userName!: string;
   password!: string;
-  roles!: string[];
   errMsj!: string;
 
   constructor(
     private tokenService: TokenService,
     private authService: AuthService,
     private router: Router //  private toastr: ToastrService
-  ) {}
+  ) { }
   ngOnInit(): void {
     if (this.tokenService.getToken()) {
       this.isLogged = true;
       this.isLoginFail = false;
-      this.roles = this.tokenService.getAuthorities();
     }
   }
   onLogin(): void {
@@ -38,8 +36,7 @@ export class LoginComponent implements OnInit {
         this.isLogged = true;
         this.tokenService.setToken(data.token);
         this.tokenService.setUserName(data.nombreUsuario);
-        this.tokenService.setAuthorities(data.authorities);
-        this.roles = data.authorities;
+
         /*   this.toastr.success('Bienvenido ' + data.nombreUsuario, 'OK', {
           timeOut: 3000,
           positionClass: 'toast-top-center',

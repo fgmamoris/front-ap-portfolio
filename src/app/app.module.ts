@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { BrowserModule } from '@angular/platform-browser';
+import { ToastrModule } from 'ngx-toastr';
 import { AppRoutingModule } from './app-routing.module';
 
 
@@ -19,9 +20,12 @@ import { ExperienceFormComponent } from './components/experience/experience-form
 import { ExperienceItemComponent } from './components/experience/experience-item/experience-item.component';
 import { ExperienceComponent } from './components/experience/experience.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { interceptorProvider } from './components/interceptors/Interceptor.service';
+
 import { FormInterestComponent } from './components/interests/form-interest/form-interest.component';
 import { InterestsComponent } from './components/interests/interests.component';
 import { NavComponent } from './components/nav/nav.component';
+
 import { FormPersonComponent } from './components/person/form-person/form-person.component';
 import { PersonComponent } from './components/person/person.component';
 import { FormSkillComponent } from './components/skills/form-skill/form-skill.component';
@@ -36,6 +40,8 @@ import { SocialMediaComponent } from './components/social-media/social-media.com
 import { PageCentralComponent } from './page-central/page-central.component';
 import { IndexComponent } from './pages/index/index.component';
 import { LoginComponent } from './pages/login/login.component';
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -69,12 +75,14 @@ import { LoginComponent } from './pages/login/login.component';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    ToastrModule.forRoot(),
   ],
-  providers: [],
+  providers: [interceptorProvider],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

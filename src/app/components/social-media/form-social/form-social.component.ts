@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 import { SocialMedia } from 'src/app/interfaces/social-media';
 import { SocialMediaService } from 'src/app/services/socialMedia.service';
@@ -25,7 +26,7 @@ export class FormSocialComponent implements OnInit {
 
   constructor(
     private socialService: SocialMediaService,
-    private router: Router
+    private router: Router, private toastr: ToastrService
   ) {
     this.socialDetailForm = {
       id: 0,
@@ -71,23 +72,30 @@ export class FormSocialComponent implements OnInit {
         .subscribe(
           (data) => {
 
+            this.toastr.success('Edición correcta', 'OK', {
+              timeOut: 1500, positionClass: 'toast-top-center'
+            });
             this.form!.reset();
             this.handlerCancel();
-            this.router.navigate(['/']).then(() => {
-              window.location.reload();
-            });
-            /*this.toastr.success('Producto Creado', 'OK', {
-            timeOut: 3000, positionClass: 'toast-top-center'
-          });*/
-            //this.router.navigate(['/lista']);
+            setTimeout(() => {
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            }, 1500);
+
+
           },
           (err) => {
             console.log(err.error.mensaje);
-            /*this.toastr.error(err.error.mensaje, 'Fail', {
-            timeOut: 3000,  positionClass: 'toast-top-center',
-          });
-          // this.router.navigate(['/']);
-          */
+            this.toastr.error(err.error.mensaje, 'Fail', {
+              timeOut: 1500, positionClass: 'toast-top-center',
+            });
+            setTimeout(() => {
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            }, 1500);
+
           }
         );
     }
@@ -114,7 +122,8 @@ export class FormSocialComponent implements OnInit {
   constructForm(social: SocialMedia): void {
     this.form = new FormGroup({
       nombreIcono: new FormControl(social.nombreIcono, [
-        Validators.pattern('fa-[a-zA-Z0-9-]+'),
+        //Validators.pattern('fa-[a-zA-Z0-9-]+ fa-[a-zA-Z0-9-]+'),
+        Validators.minLength(5),
         Validators.required,
       ]),
       urlRedSocial: new FormControl(social.urlRedSocial, [

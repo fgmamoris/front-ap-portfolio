@@ -2,33 +2,39 @@
 <section class="resume-section" id="interests">
   <div class="resume-section-content">
     <h2 class="mb-2">Interes</h2>
-    <app-form-interest
-      *ngIf="isLogged && addForm; else rest"
-      [handlerCancel]="handlerForm"
-      [personId]="personId"
-      [exitsInterest]="exitsInterest"
-    ></app-form-interest>
-
-    <ng-template #rest
-      ><div>
-        <p>
-          {{ interest.descripcion }}
-        </p>
-        <p *ngIf="personId !== 0 && !exitsInterest">
-          No hay datos cargados en el sistema
-          <span *ngIf="!addForm && isLogged" (click)="handlerForm()"
-            ><i class="fa-solid fa-circle-plus"></i
-          ></span>
-        </p>
+    <div class="d-flex justify-content-center" *ngIf="show; else showRest">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
-      <div
-        class="text-start mb-4"
-        *ngIf="isLogged && !addForm && exitsInterest"
-      >
-        <span (click)="handlerForm()">
-          <i class="fa-solid fa-pen-to-square ms-1"></i>
-        </span></div
-    ></ng-template>
+    </div>
+    <ng-template #showRest>
+      <app-form-interest
+        *ngIf="isLogged && addForm; else rest"
+        [handlerCancel]="handlerForm"
+        [personId]="personId"
+        [exitsInterest]="exitsInterest"
+      ></app-form-interest>
+
+      <ng-template #rest
+        ><div>
+          <p style="white-space: pre-line">
+            {{ interest.descripcion }}
+            <span
+              *ngIf="!addForm && isLogged && !exitsInterest"
+              (click)="handlerForm()"
+              ><i class="fa-solid fa-circle-plus"></i
+            ></span>
+          </p>
+        </div>
+        <div
+          class="text-start mb-4"
+          *ngIf="isLogged && !addForm && exitsInterest"
+        >
+          <span (click)="handlerForm()">
+            <i class="fa-solid fa-pen-to-square ms-1"></i>
+          </span></div
+      ></ng-template>
+    </ng-template>
   </div>
 </section>
 <hr class="m-0" />

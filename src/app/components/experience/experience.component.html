@@ -2,39 +2,46 @@
 <section class="resume-section" id="experience">
   <div class="resume-section-content">
     <h2 class="mb-2">Experiencia Laboral</h2>
-    <div *ngIf="addForm && isLogged; else rest">
-      <app-experience-form
-        [handlerCancel]="handlerForm"
-        [idExperience]="editId"
-        [personId]="personId"
-      >
-      </app-experience-form>
+    <div class="d-flex justify-content-center" *ngIf="show; else showRest">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
     </div>
-    <ng-template #rest>
-      <p *ngIf="personId === 0">
-        Deberá ingresar primero la persona para poder cargar la experiencia
-      </p>
-      <p *ngIf="personId !== 0 && experiences?.length === 0">
-        No hay datos cargados en el sistema
-        <span *ngIf="!addForm && isLogged" (click)="handlerForm(0)"
-          ><i class="fa-solid fa-circle-plus"></i
-        ></span>
-      </p>
-      <h3 class="ms-2">
-        <span
-          (click)="handlerForm(0)"
-          *ngIf="!addForm && isLogged && experiences?.length !== 0"
-          ><i class="fa-solid fa-circle-plus"></i
-        ></span>
-      </h3>
-      <div *ngFor="let experience of experiences; let i = index">
-        <app-experience-item
-          *ngIf="!addForm"
-          [experienceItem]="experience"
-          [handlerEdit]="handlerForm"
+    <ng-template #showRest>
+      <div *ngIf="addForm && isLogged; else rest">
+        <app-experience-form
+          [handlerCancel]="handlerForm"
+          [idExperience]="editId"
+          [personId]="personId"
         >
-        </app-experience-item></div
-    ></ng-template>
+        </app-experience-form>
+      </div>
+      <ng-template #rest>
+        <p *ngIf="personId === 0">
+          Deberá ingresar primero la persona para poder cargar la experiencia
+        </p>
+        <p *ngIf="personId !== 0 && experiences?.length === 0">
+          No hay datos cargados en el sistema
+          <span *ngIf="!addForm && isLogged" (click)="handlerForm(0)"
+            ><i class="fa-solid fa-circle-plus"></i
+          ></span>
+        </p>
+        <h3 class="ms-2">
+          <span
+            (click)="handlerForm(0)"
+            *ngIf="!addForm && isLogged && experiences?.length !== 0"
+            ><i class="fa-solid fa-circle-plus"></i
+          ></span>
+        </h3>
+        <div *ngFor="let experience of experiences; let i = index">
+          <app-experience-item
+            *ngIf="!addForm"
+            [experienceItem]="experience"
+            [handlerEdit]="handlerForm"
+          >
+          </app-experience-item></div
+      ></ng-template>
+    </ng-template>
   </div>
 </section>
 <hr class="m-0" />

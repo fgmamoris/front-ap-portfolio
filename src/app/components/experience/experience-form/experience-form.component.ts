@@ -12,6 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { Experience } from 'src/app/interfaces/experience';
 import { ExperienceService } from 'src/app/services/experience.service';
+import { TokenService } from 'src/app/services/token.service';
 
 @Component({
   selector: 'app-experience-form',
@@ -27,10 +28,13 @@ export class ExperienceFormComponent implements OnInit {
   fechaInicioString!: string;
   fechaFinString!: string;
   form!: FormGroup;
+  show: boolean = true;
 
   constructor(
     private experienceService: ExperienceService,
-    private router: Router, private toastr: ToastrService
+    private router: Router,
+    private toastr: ToastrService,
+    private tokenService: TokenService
   ) {
     this.experienceItemForm = {
       id: 0,
@@ -48,6 +52,7 @@ export class ExperienceFormComponent implements OnInit {
     this.constructForm(this.experienceItemForm);
   }
   onSubmit(experience: any): void {
+    this.show = false;
     if (this.idExperience === 0) {
       this.experienceService
         .addExperience(
@@ -64,23 +69,31 @@ export class ExperienceFormComponent implements OnInit {
         )
         .subscribe(
           (data) => {
+            this.toastr.success('Creación correcta', 'OK', {
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
+            });
             this.form!.reset();
             this.handlerCancel();
-            this.router.navigate(['/']).then(() => {
-              window.location.reload();
-            });
-            /*this.toastr.success('Producto Creado', 'OK', {
-            timeOut: 3000, positionClass: 'toast-top-center'
-          });*/
-            //this.router.navigate(['/lista']);
+            setTimeout(() => {
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            }, 1500);
           },
           (err) => {
-            console.log(err.error.mensaje);
-            /*this.toastr.error(err.error.mensaje, 'Fail', {
-            timeOut: 3000,  positionClass: 'toast-top-center',
-          });
-          // this.router.navigate(['/']);
-          */
+            this.tokenService.logOut();
+            this.errMsj = err.message;
+            console.log(this.errMsj);
+            this.toastr.error(this.errMsj, 'Fail', {
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
+            });
+            setTimeout(() => {
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            }, 1500);
           }
         );
     } else {
@@ -100,7 +113,8 @@ export class ExperienceFormComponent implements OnInit {
         .subscribe(
           (data) => {
             this.toastr.success('Edición correcta', 'OK', {
-              timeOut: 1500, positionClass: 'toast-top-center'
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
             });
             this.form!.reset();
             this.handlerCancel();
@@ -109,20 +123,20 @@ export class ExperienceFormComponent implements OnInit {
                 window.location.reload();
               });
             }, 1500);
-
-
           },
           (err) => {
-            console.log(err.error.mensaje);
-            this.toastr.error(err.error.mensaje, 'Fail', {
-              timeOut: 1500, positionClass: 'toast-top-center',
+            this.tokenService.logOut();
+            this.errMsj = err.message;
+            console.log(this.errMsj);
+            this.toastr.error(this.errMsj, 'Fail', {
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
             });
             setTimeout(() => {
               this.router.navigate(['/']).then(() => {
                 window.location.reload();
               });
             }, 1500);
-
           }
         );
     }
@@ -144,16 +158,24 @@ export class ExperienceFormComponent implements OnInit {
           }
 
           this.constructForm(this.experienceItemForm);
+          this.show = false;
         },
         (err) => {
           this.errMsj = err.error.mensaje;
-          /*this.toastr.error(this.errMsj, 'Fail', {
-        timeOut: 3000,
-        positionClass: 'toast-top-center',
-      });*/
           console.log(err.error.mensaje);
+          this.toastr.error(err.error.mensaje, 'Fail', {
+            timeOut: 1500,
+            positionClass: 'toast-top-center',
+          });
+          setTimeout(() => {
+            this.router.navigate(['/']).then(() => {
+              window.location.reload();
+            });
+          }, 1500);
         }
       );
+    } else {
+      this.show = false;
     }
   }
   constructForm(experience: Experience): void {
@@ -167,7 +189,10 @@ export class ExperienceFormComponent implements OnInit {
           Validators.required,
           Validators.minLength(5),
         ]),
-        descripcion: new FormControl(experience.descripcion),
+        descripcion: new FormControl(
+          experience.descripcion,
+          Validators.maxLength(10000)
+        ),
         fechaInicioString: new FormControl(
           this.fechaInicioString,
           Validators.required
@@ -229,13 +254,16 @@ export class ExperienceFormComponent implements OnInit {
     return this.form.get('compania')!;
   }
 
-  get dateInicioString() {
+  get fechaInicio() {
     return this.form.get('fechaInicioString')!;
   }
-  get dateFinString() {
+  get fechaFin() {
     return this.form.get('fechaFinString')!;
   }
   get actual() {
     return this.form.get('actual')!;
+  }
+  get descripcion() {
+    return this.form.get('descripcion')!;
   }
 }

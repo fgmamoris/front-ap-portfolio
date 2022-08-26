@@ -1,43 +1,55 @@
-<!-- Awards-->
+<!-- Awards -->
+
 <section class="resume-section" id="awards">
   <div class="resume-section-content">
     <h2 class="mb-2">Certificados</h2>
-    <app-form-certificate
-      *ngIf="addForm && isLogged; else rest"
-      [handlerCancel]="handlerForm"
-      [idCertificate]="idEdit"
-      [personId]="personId"
-    >
-    </app-form-certificate>
-    <ng-template #rest>
-      <div>
-        <p *ngIf="personId === 0 && certificates?.length == 0">
-          Deberá ingresar primero la persona para poder cargar los certificados
-        </p>
-        <p *ngIf="personId !== 0 && certificates?.length == 0">
-          No hay datos cargados en el sistema
-          <span *ngIf="!addForm && isLogged" (click)="handlerForm(0)"
-            ><i class="fa-solid fa-circle-plus"></i
-          ></span>
-        </p>
-      </div>
-      <div *ngIf="isLogged && !addForm && certificates.length !== 0">
-        <h4 class="px-3">
-          <span (click)="handlerForm(idEdit)"
-            ><i class="fa-solid fa-circle-plus"></i
-          ></span>
-        </h4>
-      </div>
 
-      <ul class="fa-ul mb-0" *ngIf="!addForm">
-        <li *ngFor="let certificate of certificates; let i = index">
-          <app-certificate-item
-            [certificateItem]="certificate"
-            [handlerEdit]="handlerForm"
-          >
-          </app-certificate-item>
-        </li>
-      </ul>
+    <div class="d-flex justify-content-center" *ngIf="show; else showRest">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <ng-template #showRest>
+      <app-form-certificate
+        *ngIf="addForm && isLogged; else rest"
+        [handlerCancel]="handlerForm"
+        [idCertificate]="idEdit"
+        [personId]="personId"
+      ></app-form-certificate>
+      <ng-template #rest>
+        <div>
+          <p *ngIf="personId === 0 && certificates?.length == 0">
+            Deberá ingresar primero la persona para poder cargar los
+            certificados
+          </p>
+
+          <p *ngIf="personId !== 0 && certificates?.length == 0">
+            No hay datos cargados en el sistema
+
+            <span *ngIf="!addForm && isLogged" (click)="handlerForm(0)">
+              <i class="fa-solid fa-circle-plus"></i>
+            </span>
+          </p>
+        </div>
+
+        <div *ngIf="isLogged && !addForm && certificates.length !== 0">
+          <h4 class="px-3">
+            <span (click)="handlerForm(idEdit)">
+              <i class="fa-solid fa-circle-plus"></i>
+            </span>
+          </h4>
+        </div>
+
+        <ul class="fa-ul mb-0" *ngIf="!addForm">
+          <li *ngFor="let certificate of certificates; let i = index">
+            <app-certificate-item
+              [certificateItem]="certificate"
+              [handlerEdit]="handlerForm"
+            ></app-certificate-item>
+          </li>
+        </ul>
+      </ng-template>
     </ng-template>
   </div>
 </section>

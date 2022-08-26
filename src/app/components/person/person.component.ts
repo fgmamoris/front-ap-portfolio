@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { PersonDetail } from 'src/app/interfaces/personDetail';
 import { PersonService } from 'src/app/services/person.service';
@@ -15,15 +17,19 @@ export class PersonComponent implements OnInit {
   addForm: boolean = false;
   errMsj!: string;
   id: number = 0;
+  show!: boolean;
 
   constructor(
     private personService: PersonService,
-    private tokenService: TokenService
-  ) {}
+    private tokenService: TokenService,
+    private router: Router,
+    private toastr: ToastrService
+  ) { }
 
   ngOnInit(): void {
     this.getPersonDetail();
     this.getToken();
+    this.show = true;
   }
 
   handlerForm = (id: number): void => {
@@ -39,7 +45,9 @@ export class PersonComponent implements OnInit {
             email: data[0].email,
             apellido: data[0].apellido,
             direccion: data[0].direccion,
+
           };
+
         } else {
           this.personDetail = {
             id: 0,
@@ -50,15 +58,21 @@ export class PersonComponent implements OnInit {
               'Deberá ingresar los datos de la persona para poder cargar el resto de los elementos',
           };
         }
+        this.show = false;
       },
       (err) => {
         this.isLogged = false;
-        this.errMsj = err.error.mensaje;
-        /*this.toastr.error(this.errMsj, 'Fail', {
-        timeOut: 3000,
-        positionClass: 'toast-top-center',
-      });*/
-        console.log(err.error.mensaje);
+        this.tokenService.logOut()
+        this.errMsj = err.message;
+        console.log(this.errMsj);
+        this.toastr.error(this.errMsj,'Fail', {
+          timeOut: 1500, positionClass: 'toast-top-center',
+        });
+        setTimeout(() => {
+          this.router.navigate(['/']).then(() => {
+            window.location.reload();
+          });
+        }, 1500);
       }
     );
   }

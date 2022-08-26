@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Certificate } from 'src/app/interfaces/certificate';
 import { CertificateService } from 'src/app/services/certificate.service';
+import { TokenService } from 'src/app/services/token.service';
 
 @Component({
   selector: 'app-form-certificate',
@@ -14,15 +15,18 @@ export class FormCertificateComponent implements OnInit {
   @Input() handlerCancel: any;
   @Input() personId!: number;
   @Input() idCertificate!: number;
-  errMsj!: String;
+  errMsj!: string;
   certificateDetailForm!: Certificate;
   resultado!: string;
   form!: FormGroup;
   fechaString!: String;
+  show: boolean = true;
 
   constructor(
     private certificateService: CertificateService,
-    private router: Router, private toastr: ToastrService
+    private router: Router,
+    private toastr: ToastrService,
+    private tokenService: TokenService
   ) {
     this.certificateDetailForm = {
       id: 0,
@@ -35,31 +39,40 @@ export class FormCertificateComponent implements OnInit {
   ngOnInit(): void {
     this.getCertificate(this.idCertificate);
     this.constructForm(this.certificateDetailForm);
-    //this.fechaTest = new Date();
   }
   onSubmit(certificate: Certificate): void {
+    this.show = true;
     if (this.idCertificate === 0) {
       this.certificateService
         .addCertificate(certificate, this.personId)
         .subscribe(
           (data) => {
-            /* this.form!.reset();
-             this.handlerCancel();
-             this.router.navigate(['/']).then(() => {
-               window.location.reload();
-             });
-             /*this.toastr.success('Producto Creado', 'OK', {
-             timeOut: 3000, positionClass: 'toast-top-center'
-           });*/
-            //this.router.navigate(['/lista']);
+            console.log(data);
+            this.toastr.success('Creación correcta', 'OK', {
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
+            });
+            this.form!.reset();
+            this.handlerCancel();
+            setTimeout(() => {
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            }, 1500);
           },
-          (err) => {
-            console.log(err.error.mensaje);
-            /*this.toastr.error(err.error.mensaje, 'Fail', {
-            timeOut: 3000,  positionClass: 'toast-top-center',
-          });
-          // this.router.navigate(['/']);
-          */
+          (err) => {            
+            this.tokenService.logOut();
+            this.errMsj = err.message;
+            console.log(this.errMsj);
+            this.toastr.error(this.errMsj, 'Fail', {
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
+            });
+            setTimeout(() => {
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            }, 1500);
           }
         );
     } else {
@@ -71,7 +84,8 @@ export class FormCertificateComponent implements OnInit {
         .subscribe(
           (data) => {
             this.toastr.success('Edición correcta', 'OK', {
-              timeOut: 1500, positionClass: 'toast-top-center'
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
             });
             this.form!.reset();
             this.handlerCancel();
@@ -80,22 +94,25 @@ export class FormCertificateComponent implements OnInit {
                 window.location.reload();
               });
             }, 1500);
-
-
           },
           (err) => {
-            console.log(err.error.mensaje);
-            this.toastr.error(err.error.mensaje, 'Fail', {
-              timeOut: 1500, positionClass: 'toast-top-center',
+            this.tokenService.logOut();
+            this.errMsj = err.message;
+            console.log(this.errMsj);
+            this.toastr.error(this.errMsj, 'Fail', {
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
             });
             setTimeout(() => {
               this.router.navigate(['/']).then(() => {
                 window.location.reload();
               });
             }, 1500);
-
           }
         );
+    }
+    if (this.errMsj != null) {
+      console.log(this.errMsj);
     }
   }
   getCertificate(id: number): void {
@@ -109,18 +126,25 @@ export class FormCertificateComponent implements OnInit {
             );
           }
           this.constructForm(this.certificateDetailForm);
+          this.show = false;
         },
         (err) => {
-          this.errMsj = err.error.mensaje;
-          /*this.toastr.error(this.errMsj, 'Fail', {
-          timeOut: 3000,
-          positionClass: 'toast-top-center',
-        });*/
-          console.log(err.error.mensaje);
+          this.tokenService.logOut();
+          this.errMsj = err.message;
+          console.log(this.errMsj);
+          this.toastr.error(this.errMsj, 'Fail', {
+            timeOut: 1500,
+            positionClass: 'toast-top-center',
+          });
+          setTimeout(() => {
+            this.router.navigate(['/']).then(() => {
+              window.location.reload();
+            });
+          }, 1500);
         }
       );
     } else {
-      //this.educationItemForm.fechaFin:null;
+      this.show = false;
     }
   }
   constructForm(certificate: Certificate): void {
@@ -130,8 +154,8 @@ export class FormCertificateComponent implements OnInit {
         Validators.required,
       ]),
       urlCertificado: new FormControl(certificate.urlCertificado, [
-        Validators.pattern('(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})'),
-        Validators.required,
+        //Validators.pattern('(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})'),
+        //Validators.required,
       ]),
       fecha: new FormControl(this.fechaString, [Validators.required]),
     });
@@ -163,9 +187,7 @@ export class FormCertificateComponent implements OnInit {
   get nombreCurso() {
     return this.form.get('nombreCurso')!;
   }
-  get urlCertificado() {
-    return this.form.get('urlCertificado')!;
-  }
+
   get fecha() {
     return this.form.get('fecha')!;
   }

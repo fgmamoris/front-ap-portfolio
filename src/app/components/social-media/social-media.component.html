@@ -1,45 +1,53 @@
 <section class="social-icons" id="social-media-icons">
-  <div *ngIf="addForm && isLogged; else rest">
-    <app-form-social
-      [handlerCancel]="handlerForm"
-      [personId]="personId"
-      [idSocial]="idEdit"
-    >
-    </app-form-social>
-  </div>
-  <ng-template #rest>
-    <div>
-      <p *ngIf="personId === 0">
-        Deberá ingresar primero la persona para poder cargar las redes sociales
-      </p>
-      <p *ngIf="personId !== 0 && socials.length === 0">
-        No hay redes sociales cargadas en el sistema
-        <span *ngIf="isLogged" (click)="handlerForm(idEdit)"
-          ><i class="fa-solid fa-circle-plus"></i
-        ></span>
-      </p>
+  <div class="d-flex justify-content-center" *ngIf="show; else showRest">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
     </div>
+  </div>
+  <ng-template #showRest>
+    <div *ngIf="addForm && isLogged; else rest">
+      <app-form-social
+        [handlerCancel]="handlerForm"
+        [personId]="personId"
+        [idSocial]="idEdit"
+      >
+      </app-form-social>
+    </div>
+    <ng-template #rest>
+      <div>
+        <p *ngIf="personId === 0">
+          Deberá ingresar primero la persona para poder cargar las redes
+          sociales
+        </p>
+        <p *ngIf="personId !== 0 && socials.length === 0">
+          No hay redes sociales cargadas en el sistema
+          <span *ngIf="isLogged" (click)="handlerForm(idEdit)"
+            ><i class="fa-solid fa-circle-plus"></i
+          ></span>
+        </p>
+      </div>
 
-    <ul class="list-inline dev-icons">
-      <li
-        class="list-inline-item"
-        *ngFor="let social of socials; let i = index"
-      >
-        <app-social-media-item
-          *ngIf="!addForm"
-          [handlerEdit]="handlerForm"
-          [socialItem]="social"
-        ></app-social-media-item>
-      </li>
-      <li
-        *ngIf="isLogged && !addForm && socials.length !== 0"
-        class="list-inline-item"
-      >
-        <span (click)="handlerForm(idEdit)" class="social-icon"
-          ><a><i class="fa-solid fa-circle-plus"></i></a
-        ></span>
-      </li>
-    </ul>
+      <ul class="list-inline dev-icons">
+        <li
+          class="list-inline-item"
+          *ngFor="let social of socials; let i = index"
+        >
+          <app-social-media-item
+            *ngIf="!addForm"
+            [handlerEdit]="handlerForm"
+            [socialItem]="social"
+          ></app-social-media-item>
+        </li>
+        <li
+          *ngIf="isLogged && !addForm && socials.length !== 0"
+          class="list-inline-item"
+        >
+          <span (click)="handlerForm(idEdit)" class="social-icon"
+            ><a><i class="fa-solid fa-circle-plus"></i></a
+          ></span>
+        </li>
+      </ul>
+    </ng-template>
   </ng-template>
 </section>
 

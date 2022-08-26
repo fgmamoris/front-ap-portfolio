@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { PersonDetail } from 'src/app/interfaces/personDetail';
 import { PersonService } from 'src/app/services/person.service';
 import { TokenService } from '../../services/token.service';
@@ -16,11 +17,15 @@ export class NavComponent implements OnInit {
     apellido: '',
     direccion:
       'Deberá ingresar los datos de la persona para poder cargar el resto de los elementos',
-  };;
+  };
   isLogged = false;
   errMsj!: string;
 
-  constructor(private tokenService: TokenService, private personService: PersonService,) { }
+  constructor(
+    private tokenService: TokenService,
+    private personService: PersonService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
     this.getPersonDetail();
@@ -52,11 +57,13 @@ export class NavComponent implements OnInit {
       },
       (err) => {
         this.isLogged = false;
-        this.errMsj = err.error.mensaje;
-        /*this.toastr.error(this.errMsj, 'Fail', {
-        timeOut: 3000,
-        positionClass: 'toast-top-center',
-      });*/
+        this.tokenService.logOut();
+        this.errMsj = err.message;
+        console.log(this.errMsj);
+        this.toastr.error(this.errMsj, 'Fail', {
+          timeOut: 3000,
+          positionClass: 'toast-top-center',
+        });
         console.log(err.error.mensaje);
       }
     );

@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Interest } from 'src/app/interfaces/interest';
 import { InterestService } from 'src/app/services/interest.service';
 import { PersonService } from 'src/app/services/person.service';
+import { TokenService } from 'src/app/services/token.service';
 
 @Component({
   selector: 'app-form-interest',
@@ -15,14 +16,17 @@ export class FormInterestComponent implements OnInit {
   @Input() handlerCancel: any;
   @Input() personId!: number;
   @Input() exitsInterest!: boolean;
-  errMsj!: String;
+  errMsj!: string;
   interestDetailForm!: Interest;
   resultado!: string;
   form!: FormGroup;
+  show: boolean = true;
 
   constructor(
     private interestService: InterestService,
-    private router: Router, private toastr: ToastrService
+    private router: Router,
+    private toastr: ToastrService,
+    private tokenService: TokenService
   ) {
     this.interestDetailForm = {
       id: 0,
@@ -36,27 +40,35 @@ export class FormInterestComponent implements OnInit {
   }
 
   onSubmit(interest: Interest): void {
+    this.show = true;
     if (!this.exitsInterest) {
       this.interestService.addInterest(interest, this.personId).subscribe(
         (data) => {
-
+          this.toastr.success('Creación correcta', 'OK', {
+            timeOut: 1500,
+            positionClass: 'toast-top-center',
+          });
           this.form!.reset();
           this.handlerCancel();
-          this.router.navigate(['/']).then(() => {
-            window.location.reload();
-          });
-          /*this.toastr.success('Producto Creado', 'OK', {
-            timeOut: 3000, positionClass: 'toast-top-center'
-          });*/
-          //this.router.navigate(['/lista']);
+          setTimeout(() => {
+            this.router.navigate(['/']).then(() => {
+              window.location.reload();
+            });
+          }, 1500);
         },
         (err) => {
-          console.log(err.error.mensaje);
-          /*this.toastr.error(err.error.mensaje, 'Fail', {
-            timeOut: 3000,  positionClass: 'toast-top-center',
+          this.tokenService.logOut();
+          this.errMsj = err.message;
+          console.log(this.errMsj);
+          this.toastr.error(this.errMsj, 'Fail', {
+            timeOut: 1500,
+            positionClass: 'toast-top-center',
           });
-          // this.router.navigate(['/']);
-          */
+          setTimeout(() => {
+            this.router.navigate(['/']).then(() => {
+              window.location.reload();
+            });
+          }, 1500);
         }
       );
     } else {
@@ -67,9 +79,9 @@ export class FormInterestComponent implements OnInit {
         })
         .subscribe(
           (data) => {
-
             this.toastr.success('Edición correcta', 'OK', {
-              timeOut: 1500, positionClass: 'toast-top-center'
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
             });
             this.form!.reset();
             this.handlerCancel();
@@ -78,20 +90,20 @@ export class FormInterestComponent implements OnInit {
                 window.location.reload();
               });
             }, 1500);
-
-
           },
           (err) => {
-            console.log(err.error.mensaje);
-            this.toastr.error(err.error.mensaje, 'Fail', {
-              timeOut: 1500, positionClass: 'toast-top-center',
+            this.tokenService.logOut();
+            this.errMsj = err.message;
+            console.log(this.errMsj);
+            this.toastr.error(this.errMsj, 'Fail', {
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
             });
             setTimeout(() => {
               this.router.navigate(['/']).then(() => {
                 window.location.reload();
               });
             }, 1500);
-
           }
         );
     }
@@ -102,23 +114,32 @@ export class FormInterestComponent implements OnInit {
         (data) => {
           this.interestDetailForm = data;
           this.constructForm(this.interestDetailForm);
+          this.show = false;
         },
         (err) => {
-          this.errMsj = err.error.mensaje;
+          this.tokenService.logOut();
+          this.errMsj = err.message;
+          console.log(this.errMsj);
           /*this.toastr.error(this.errMsj, 'Fail', {
-          timeOut: 3000,
-          positionClass: 'toast-top-center',
-        });*/
-          console.log(err.error.mensaje);
+            timeOut: 1500,
+            positionClass: 'toast-top-center',
+          });
+          setTimeout(() => {
+            this.router.navigate(['/']).then(() => {
+              window.location.reload();
+            });
+          }, 1500);*/
         }
       );
+    } else {
+      this.show = false;
     }
   }
   constructForm(interest: Interest): void {
-
     this.form = new FormGroup({
       descripcion: new FormControl(interest.descripcion, [
         Validators.minLength(5),
+        Validators.maxLength(10000),
         Validators.required,
       ]),
     });

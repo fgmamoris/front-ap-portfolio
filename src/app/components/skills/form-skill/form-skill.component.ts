@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { Skill } from 'src/app/interfaces/skill';
 import { SkillService } from 'src/app/services/skill.service';
+import { TokenService } from 'src/app/services/token.service';
 
 @Component({
   selector: 'app-form-skill',
@@ -15,12 +16,18 @@ export class FormSkillComponent implements OnInit {
   @Input() handlerCancel: any;
   @Input() personId!: number;
   @Input() idSkill!: number;
-  errMsj!: String;
+  errMsj!: string;
   skillDetailForm!: Skill;
   resultado!: string;
   form!: FormGroup;
+  show: boolean = true;
 
-  constructor(private skillService: SkillService, private router: Router, private toastr: ToastrService) {
+  constructor(
+    private skillService: SkillService,
+    private router: Router,
+    private toastr: ToastrService,
+    private tokenService: TokenService
+  ) {
     this.skillDetailForm = {
       id: 0,
       nombreIcono: '',
@@ -30,30 +37,38 @@ export class FormSkillComponent implements OnInit {
   ngOnInit(): void {
     this.getSkill(this.idSkill);
     this.constructForm(this.skillDetailForm);
-    //this.fechaTest = new Date();
   }
   onSubmit(skill: Skill): void {
+    this.show = true;
     if (this.idSkill == 0) {
       this.skillService.addSkill(skill, this.personId).subscribe(
         (data) => {
+          this.toastr.success('Creación correcta', 'OK', {
+            timeOut: 1500,
+            positionClass: 'toast-top-center',
+          });
           this.form!.reset();
           this.handlerCancel();
-
-          this.router.navigate(['/']).then(() => {
-            window.location.reload();
-          });
-          /*this.toastr.success('Producto Creado', 'OK', {
-            timeOut: 3000, positionClass: 'toast-top-center'
-          });*/
-          //this.router.navigate(['/lista']);
+          setTimeout(() => {
+            this.router.navigate(['/']).then(() => {
+              window.location.reload();
+            });
+          }, 1500);
         },
         (err) => {
-          console.log(err.error.mensaje);
-          /*this.toastr.error(err.error.mensaje, 'Fail', {
-            timeOut: 3000,  positionClass: 'toast-top-center',
+          
+          this.tokenService.logOut();
+          this.errMsj = err.message;
+          console.log(this.errMsj);
+          this.toastr.error(this.errMsj, 'Fail', {
+            timeOut: 1500,
+            positionClass: 'toast-top-center',
           });
-          // this.router.navigate(['/']);
-          */
+          setTimeout(() => {
+            this.router.navigate(['/']).then(() => {
+              window.location.reload();
+            });
+          }, 1500);
         }
       );
     } else {
@@ -64,9 +79,9 @@ export class FormSkillComponent implements OnInit {
         })
         .subscribe(
           (data) => {
-
             this.toastr.success('Edición correcta', 'OK', {
-              timeOut: 1500, positionClass: 'toast-top-center'
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
             });
             this.form!.reset();
             this.handlerCancel();
@@ -75,20 +90,20 @@ export class FormSkillComponent implements OnInit {
                 window.location.reload();
               });
             }, 1500);
-
-
           },
           (err) => {
-            console.log(err.error.mensaje);
-            this.toastr.error(err.error.mensaje, 'Fail', {
-              timeOut: 1500, positionClass: 'toast-top-center',
+            this.tokenService.logOut();
+            this.errMsj = err.message;
+            console.log(this.errMsj);
+            this.toastr.error(this.errMsj, 'Fail', {
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
             });
             setTimeout(() => {
               this.router.navigate(['/']).then(() => {
                 window.location.reload();
               });
             }, 1500);
-
           }
         );
     }
@@ -98,20 +113,27 @@ export class FormSkillComponent implements OnInit {
       this.skillService.getById(id).subscribe(
         (data) => {
           this.skillDetailForm = data;
-
           this.constructForm(this.skillDetailForm);
+          this.show = false;
         },
+
         (err) => {
-          this.errMsj = err.error.mensaje;
-          /*this.toastr.error(this.errMsj, 'Fail', {
-          timeOut: 3000,
-          positionClass: 'toast-top-center',
-        });*/
-          console.log(err.error.mensaje);
+          this.tokenService.logOut();
+          this.errMsj = err.message;
+          console.log(this.errMsj);
+          this.toastr.error(this.errMsj, 'Fail', {
+            timeOut: 1500,
+            positionClass: 'toast-top-center',
+          });
+          setTimeout(() => {
+            this.router.navigate(['/']).then(() => {
+              window.location.reload();
+            });
+          }, 1500);
         }
       );
     } else {
-      //this.educationItemForm.fechaFin:null;
+      this.show = false;
     }
   }
   constructForm(skill: Skill): void {
@@ -122,7 +144,6 @@ export class FormSkillComponent implements OnInit {
         Validators.required,
       ]),
     });
-
   }
 
   get nombreIcono() {

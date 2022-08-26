@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Certificate } from 'src/app/interfaces/certificate';
 import { CertificateService } from 'src/app/services/certificate.service';
 import { TokenService } from 'src/app/services/token.service';
@@ -18,7 +19,8 @@ export class CertificateItemComponent implements OnInit {
   constructor(
     private tokenService: TokenService,
     private certificateService: CertificateService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -35,22 +37,29 @@ export class CertificateItemComponent implements OnInit {
   handlerRemove(id: number): void {
     this.certificateService.deleteCertificate(id).subscribe(
       (data) => {
-        /*this.toastr.error(this.errMsj, 'Fail', {
-        timeOut: 3000,
-        positionClass: 'toast-top-center',
-      });*/
-        this.router.navigate(['/']).then(() => {
-          window.location.reload();
+        this.toastr.error('Eliminación correcta', 'OK', {
+          timeOut: 1500, positionClass: 'toast-top-center'
         });
+        setTimeout(() => {
+          this.router.navigate(['/']).then(() => {
+            window.location.reload();
+          });
+        }, 1500);
       },
       (err) => {
+        this.isLogged = false;
+        this.tokenService.logOut();
+        this.errMsj = err.message;
+        console.log(this.errMsj);
+        this.toastr.error(this.errMsj, 'Fail', {
+          timeOut: 1500, positionClass: 'toast-top-center',
+        });
+        setTimeout(() => {
+          this.router.navigate(['/']).then(() => {
+            window.location.reload();
+          });
+        }, 1500);
 
-        this.errMsj = err.error.mensaje;
-        /*this.toastr.error(this.errMsj, 'Fail', {
-        timeOut: 3000,
-        positionClass: 'toast-top-center',
-      });*/
-        console.log(err.error.mensaje);
       }
     );
   }

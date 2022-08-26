@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Interest } from 'src/app/interfaces/interest';
 import { InterestService } from 'src/app/services/interest.service';
 import { PersonService } from 'src/app/services/person.service';
@@ -16,20 +18,24 @@ export class InterestsComponent implements OnInit {
   };
   isLogged = false;
   personId: number = 0;
-  errMsj!: String;
+  errMsj!: string;
   resultado!: string;
   addForm: boolean = false;
   exitsInterest: boolean = false;
+  show!: boolean;
 
   constructor(
     private interestService: InterestService,
     private personService: PersonService,
-    private tokenService: TokenService
-  ) {}
+    private tokenService: TokenService,
+    private router: Router,
+    private toastr: ToastrService
+  ) { }
 
   ngOnInit(): void {
     this.getPersonId();
     this.getToken();
+    this.show = true;
   }
   handlerForm = (): void => {
     this.addForm = !this.addForm;
@@ -47,14 +53,21 @@ export class InterestsComponent implements OnInit {
               'Deberá ingresar primero la persona, para poder cargar el interes',
           };
         }
+        this.show = false;
       },
       (err) => {
-        this.errMsj = err.error.mensaje;
-        /*this.toastr.error(this.errMsj, 'Fail', {
-        timeOut: 3000,
-        positionClass: 'toast-top-center',
-      });*/
-        console.log(err.error.mensaje);
+        this.isLogged= false;
+        this.tokenService.logOut()
+        this.errMsj = err.message;
+        console.log(this.errMsj);
+        this.toastr.error(this.errMsj, 'Fail', {
+          timeOut: 1500, positionClass: 'toast-top-center',
+        });
+        setTimeout(() => {
+          this.router.navigate(['/']).then(() => {
+            window.location.reload();
+          });
+        }, 1500);
       }
     );
   }
@@ -64,7 +77,7 @@ export class InterestsComponent implements OnInit {
         if (data.length != 0) {
           this.exitsInterest = true;
           this.interest = data[0];
-          
+
         } else {
           this.interest = {
             id: 0,
@@ -73,12 +86,18 @@ export class InterestsComponent implements OnInit {
         }
       },
       (err) => {
-        this.errMsj = err.error.mensaje;
-        /*this.toastr.error(this.errMsj, 'Fail', {
-        timeOut: 3000,
-        positionClass: 'toast-top-center',
-      });*/
-        console.log(err.error.mensaje);
+        this.isLogged= false;
+        this.tokenService.logOut()
+        this.errMsj = err.message;
+        console.log(this.errMsj);
+        this.toastr.error(this.errMsj, 'Fail', {
+          timeOut: 1500, positionClass: 'toast-top-center',
+        });
+        setTimeout(() => {
+          this.router.navigate(['/']).then(() => {
+            window.location.reload();
+          });
+        }, 1500);
       }
     );
   }

@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Experience } from 'src/app/interfaces/experience';
 import { ExperienceService } from 'src/app/services/experience.service';
 import { PersonService } from 'src/app/services/person.service';
@@ -16,17 +18,21 @@ export class ExperienceComponent implements OnInit {
   addForm = false;
   editId: number = 0;
   personId: number = 0;
+  show!: boolean;
 
   constructor(
     private tokenService: TokenService,
     private experienceService: ExperienceService,
-    private personService: PersonService
-  ) {}
+    private personService: PersonService,
+    private router: Router,
+    private toastr: ToastrService 
+  ) { }
 
   ngOnInit(): void {
     this.getPersonId();
     this.getToken();
     this.getExperiences();
+    this.show = true;
   }
 
   handlerForm = (id: number): void => {
@@ -39,16 +45,22 @@ export class ExperienceComponent implements OnInit {
         if (data.length != 0) {
           this.personId = data[0].id;
           this.getExperiences();
-          //this.exitsPerson = true;
+          
         }
       },
       (err) => {
-        this.errMsj = err.error.mensaje;
-        /*this.toastr.error(this.errMsj, 'Fail', {
-        timeOut: 3000,
-        positionClass: 'toast-top-center',
-      });*/
-        console.log(err.error.mensaje);
+        this.isLogged = false;
+        this.tokenService.logOut();
+        this.errMsj = err.message;
+        console.log(this.errMsj);
+        this.toastr.error(this.errMsj,'Fail', {
+          timeOut: 1500, positionClass: 'toast-top-center',
+        });
+        setTimeout(() => {
+          this.router.navigate(['/']).then(() => {
+            window.location.reload();
+          });
+        }, 1500);
       }
     );
   }
@@ -59,15 +71,21 @@ export class ExperienceComponent implements OnInit {
         if (data.length != 0) {
           this.experiences = data;
         }
+        this.show = false;
       },
       (err) => {
         this.isLogged = false;
-        this.errMsj = err.error.mensaje;
-        /*this.toastr.error(this.errMsj, 'Fail', {
-        timeOut: 3000,
-        positionClass: 'toast-top-center',
-      });*/
-        console.log(err.error.mensaje);
+        this.tokenService.logOut();
+        this.errMsj = err.message;
+        console.log(this.errMsj);
+        this.toastr.error(this.errMsj, 'Fail', {
+          timeOut: 1500, positionClass: 'toast-top-center',
+        });
+        setTimeout(() => {
+          this.router.navigate(['/']).then(() => {
+            window.location.reload();
+          });
+        }, 1500);
       }
     );
   }

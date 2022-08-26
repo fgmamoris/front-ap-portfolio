@@ -1,38 +1,45 @@
 <!-- About-->
 <section class="resume-section" id="about">
   <div class="resume-section-content">
-    <app-person-form
-      *ngIf="isLogged && addForm"
-      [handlerCancel]="handlerForm"
-      [personDetailId]="personDetail.id"
-    ></app-person-form>
-    <div *ngIf="!addForm && personDetail">
-      <h2 class="mb-0">
-        {{ personDetail.nombre }}
-        <span class="text-primary">{{ personDetail.apellido }}</span>
-      </h2>
-      <div class="subheading mb-3">
-        {{ personDetail.direccion }} -
-        <a href="mailto:{{ personDetail.email }}">{{ personDetail.email }}</a>
-      </div>
-      <div
-        class="text-start mb-4"
-        *ngIf="isLogged && !addForm && personDetail.id != 0"
-      >
-        <span (click)="handlerForm(0)">
-          <i class="fa-solid fa-pen-to-square ms-1"></i>
-        </span>
-      </div>
-      <h3 class="ms-2" *ngIf="!addForm && isLogged && personDetail.id == 0">
-        <span (click)="handlerForm(0)"
-          ><i class="fa-solid fa-circle-plus"></i
-        ></span>
-      </h3>
-      <div *ngIf="personDetail">
-        <app-about [personId]="personDetail.id"> </app-about>
-        <app-social-media [personId]="personDetail.id"> </app-social-media>
+    <div class="d-flex justify-content-center" *ngIf="show; else showRest">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
     </div>
+    <ng-template #showRest>
+      <app-person-form
+        *ngIf="isLogged && addForm"
+        [handlerCancel]="handlerForm"
+        [personDetailId]="personDetail.id"
+      ></app-person-form>
+      <div *ngIf="!addForm && personDetail">
+        <h2 class="mb-0">
+          {{ personDetail.nombre }}
+          <span class="text-primary">{{ personDetail.apellido }}</span>
+        </h2>
+        <div class="subheading mb-3">
+          {{ personDetail.direccion }} -
+          <a href="mailto:{{ personDetail.email }}">{{ personDetail.email }}</a>
+        </div>
+        <div
+          class="text-start mb-4"
+          *ngIf="isLogged && !addForm && personDetail.id != 0"
+        >
+          <span (click)="handlerForm(0)">
+            <i class="fa-solid fa-pen-to-square ms-1"></i>
+          </span>
+        </div>
+        <h3 class="ms-2" *ngIf="!addForm && isLogged && personDetail.id == 0">
+          <span (click)="handlerForm(0)"
+            ><i class="fa-solid fa-circle-plus"></i
+          ></span>
+        </h3>
+        <div *ngIf="personDetail">
+          <app-about [personId]="personDetail.id"> </app-about>
+          <app-social-media [personId]="personDetail.id"> </app-social-media>
+        </div>
+      </div>
+    </ng-template>
   </div>
 </section>
 

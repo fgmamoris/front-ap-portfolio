@@ -6,7 +6,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ToastrModule } from 'ngx-toastr';
 import { AppRoutingModule } from './app-routing.module';
 
-
 import { AppComponent } from './app.component';
 import { AboutComponent } from './components/about/about.component';
 import { FormAboutComponent } from './components/about/form-about/form-about.component';
@@ -34,8 +33,6 @@ import { SkillsComponent } from './components/skills/skills.component';
 import { FormSocialComponent } from './components/social-media/form-social/form-social.component';
 import { SocialMediaItemComponent } from './components/social-media/social-media-item/social-media-item.component';
 import { SocialMediaComponent } from './components/social-media/social-media.component';
-
-
 
 import { PageCentralComponent } from './page-central/page-central.component';
 import { IndexComponent } from './pages/index/index.component';
@@ -83,6 +80,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ToastrModule.forRoot(),
   ],
   providers: [interceptorProvider],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

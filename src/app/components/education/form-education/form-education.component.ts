@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Education } from 'src/app/interfaces/education';
 import { EducationService } from 'src/app/services/education.service';
+import { TokenService } from 'src/app/services/token.service';
 
 @Component({
   selector: 'app-form-education',
@@ -18,12 +19,14 @@ export class FormEducationComponent implements OnInit {
   errMsj!: string;
   fechaInicioString!: string;
   fechaFinString!: string;
-
+  show: boolean = true;
   form!: FormGroup;
 
   constructor(
     private educationService: EducationService,
-    private router: Router, private toastr: ToastrService
+    private router: Router,
+    private toastr: ToastrService,
+    private tokenService: TokenService
   ) {
     this.educationItemForm = {
       id: 0,
@@ -38,9 +41,9 @@ export class FormEducationComponent implements OnInit {
   ngOnInit(): void {
     this.getEducacion(this.idEducation);
     this.constructForm(this.educationItemForm);
-    //this.fechaTest = new Date();
   }
   onSubmit(education: any): void {
+    this.show = true;
     if (this.idEducation === 0) {
       this.educationService
         .addEducation(
@@ -56,27 +59,34 @@ export class FormEducationComponent implements OnInit {
         )
         .subscribe(
           (data) => {
+            this.toastr.success('Creación correcta', 'OK', {
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
+            });
             this.form!.reset();
             this.handlerCancel();
-            this.router.navigate(['/']).then(() => {
-              window.location.reload();
-            });
-            /*this.toastr.success('Producto Creado', 'OK', {
-            timeOut: 3000, positionClass: 'toast-top-center'
-          });*/
-            //this.router.navigate(['/lista']);
+            setTimeout(() => {
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            }, 1500);
           },
           (err) => {
-            console.log(err.error.mensaje);
-            /*this.toastr.error(err.error.mensaje, 'Fail', {
-            timeOut: 3000,  positionClass: 'toast-top-center',
-          });
-          // this.router.navigate(['/']);
-          */
+            this.tokenService.logOut();
+            this.errMsj = err.message;
+            console.log(this.errMsj);
+            this.toastr.error(this.errMsj, 'Fail', {
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
+            });
+            setTimeout(() => {
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            }, 1500);
           }
         );
     } else {
-
       this.educationService
         .updateEducation({
           id: this.educationItemForm.id,
@@ -89,7 +99,8 @@ export class FormEducationComponent implements OnInit {
         .subscribe(
           (data) => {
             this.toastr.success('Edición correcta', 'OK', {
-              timeOut: 1500, positionClass: 'toast-top-center'
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
             });
             this.form!.reset();
             this.handlerCancel();
@@ -98,20 +109,20 @@ export class FormEducationComponent implements OnInit {
                 window.location.reload();
               });
             }, 1500);
-
-
           },
           (err) => {
-            console.log(err.error.mensaje);
-            this.toastr.error(err.error.mensaje, 'Fail', {
-              timeOut: 1500, positionClass: 'toast-top-center',
+            this.tokenService.logOut();
+            this.errMsj = err.message;
+            console.log(this.errMsj);
+            this.toastr.error(this.errMsj, 'Fail', {
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
             });
             setTimeout(() => {
               this.router.navigate(['/']).then(() => {
                 window.location.reload();
               });
             }, 1500);
-
           }
         );
     }
@@ -131,20 +142,26 @@ export class FormEducationComponent implements OnInit {
               this.educationItemForm.fechaFin
             );
           }
-
           this.constructForm(this.educationItemForm);
+          this.show = false;
         },
         (err) => {
-          this.errMsj = err.error.mensaje;
-          /*this.toastr.error(this.errMsj, 'Fail', {
-          timeOut: 3000,
-          positionClass: 'toast-top-center',
-        });*/
-          console.log(err.error.mensaje);
+          this.tokenService.logOut();
+          this.errMsj = err.message;
+          console.log(this.errMsj);
+          this.toastr.error(this.errMsj, 'Fail', {
+            timeOut: 1500,
+            positionClass: 'toast-top-center',
+          });
+          setTimeout(() => {
+            this.router.navigate(['/']).then(() => {
+              window.location.reload();
+            });
+          }, 1500);
         }
       );
     } else {
-      //this.educationItemForm.fechaFin:null;
+      this.show = false;
     }
   }
   constructForm(education: Education): void {
@@ -153,7 +170,9 @@ export class FormEducationComponent implements OnInit {
         Validators.minLength(5),
         Validators.required,
       ]),
-      descripcion: new FormControl(education.descripcion),
+      descripcion: new FormControl(education.descripcion, [
+        Validators.maxLength(10000),
+      ]),
       institucion: new FormControl(education.institucion, [
         Validators.required,
         Validators.minLength(5),
@@ -192,11 +211,13 @@ export class FormEducationComponent implements OnInit {
   get institucion() {
     return this.form.get('institucion')!;
   }
-  get dateInicioString() {
+  get fechaInicio() {
     return this.form.get('fechaInicioString')!;
   }
-  get dateFinString() {
+  get fechaFin() {
     return this.form.get('fechaFinString')!;
   }
-
+  get descripcion() {
+    return this.form.get('descripcion')!;
+  }
 }

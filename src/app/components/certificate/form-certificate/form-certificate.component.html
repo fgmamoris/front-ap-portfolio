@@ -1,81 +1,95 @@
-<form (ngSubmit)="onSubmit(form.value)" [formGroup]="form" validate #f="ngForm">
-  <div class="d-flex flex-column flex-md-row justify-content-between mb-3">
-    <div class="flex-grow-1">
-      <div class="text-primary">
-        Nombre del Curso
-        <input
-          id="nombreCurso"
-          type="text"
-          name="nombreCurso"
-          class="form-control"
-          placeholder="Nombre del Curso"
-          formControlName="nombreCurso"
-          required
-          autofocus
-        />
-      </div>
-      <div
-        *ngIf="
-          nombreCurso.invalid && (nombreCurso.dirty || nombreCurso.touched)
-        "
-        class="alert alert-danger mt-3"
-      >
-        <span>El nombre del curso debe tener al menos 5 caracteres</span>
-      </div>
-      <div class="text-primary">
-        Url del certificado (https://)
-        <input
-          id="urlCertificado"
-          type="text"
-          name="urlCertificado"
-          class="form-control"
-          placeholder="Url del certificado (https://www.ejemplo.com/ruta)"
-          formControlName="urlCertificado"
-          required
-        />
-      </div>
-      <div
-        *ngIf="
-          urlCertificado.invalid &&
-          (urlCertificado.dirty || urlCertificado.touched)
-        "
-        class="alert alert-danger mt-3"
-      >
-        <span>Debe ser una dirección válida</span>
-      </div>
-
-      <div class="text-primary" style="width: 250px">
-        Fecha de finalización
-        <input
-          type="date"
-          name="fecha"
-          id="fecha"
-          class="form-control"
-          placeholder="Fecha del certificado"
-          formControlName="fecha"
-          required
-          autofocus
-        />
-      </div>
-
-      <h4 class="mt-3">
-        <button
-          class="btn btn-danger m-2"
-          type="button"
-          (click)="handlerCancel(0)"
-        >
-          Cancelar
-          <i class="fa-solid fa-circle-xmark"></i>
-        </button>
-        <button
-          class="btn btn-success m-2"
-          type="submit"
-          [disabled]="form.invalid"
-        >
-          Confirmar
-          <i class="fa-solid fa-circle-check"></i>
-        </button>
-      </h4>
-    </div>
+<div class="d-flex justify-content-center" *ngIf="show; else showRest">
+  <div class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
   </div>
-</form>
+</div>
+<ng-template #showRest>
+  <form
+    (ngSubmit)="onSubmit(form.value)"
+    [formGroup]="form"
+    validate
+    #f="ngForm"
+  >
+    <div class="d-flex justify-content-center" *ngIf="show">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <div *ngIf="!show">
+      <div class="d-flex flex-column flex-md-row justify-content-between mb-3">
+        <div class="flex-grow-1">
+          <div class="text-primary">
+            Nombre del Curso
+            <input
+              id="nombreCurso"
+              type="text"
+              name="nombreCurso"
+              class="form-control"
+              placeholder="Nombre del Curso"
+              formControlName="nombreCurso"
+              required
+              autofocus
+            />
+          </div>
+          <div
+            *ngIf="
+              nombreCurso.invalid && (nombreCurso.dirty || nombreCurso.touched)
+            "
+            class="alert alert-danger mt-3"
+          >
+            <span>El nombre del curso debe tener al menos 5 caracteres</span>
+          </div>
+          <div class="text-primary">
+            Url del certificado (https://)
+            <input
+              id="urlCertificado"
+              type="text"
+              name="urlCertificado"
+              class="form-control"
+              placeholder="Url del certificado (https://www.ejemplo.com/ruta)"
+              formControlName="urlCertificado"
+            />
+          </div>
+          <div class="text-primary" style="width: 250px">
+            Fecha de finalización
+            <input
+              type="date"
+              name="fecha"
+              id="fecha"
+              class="form-control"
+              placeholder="Fecha del certificado"
+              formControlName="fecha"
+              required
+              autofocus
+            />
+            <div
+              *ngIf="fecha.invalid && (fecha.dirty || fecha.touched)"
+              class="alert alert-danger mt-2"
+            >
+              <span>Fecha obligatoria</span>
+            </div>
+          </div>
+
+          <h4 class="mt-3">
+            <button
+              class="btn btn-danger m-2"
+              type="button"
+              (click)="handlerCancel(0)"
+            >
+              Cancelar
+              <i class="fa-solid fa-circle-xmark"></i>
+            </button>
+            <button
+              class="btn btn-success m-2"
+              type="submit"
+              [disabled]="form.invalid"
+            >
+              Confirmar
+              <i class="fa-solid fa-circle-check"></i>
+            </button>
+          </h4>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>

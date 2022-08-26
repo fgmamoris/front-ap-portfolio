@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { About } from 'src/app/interfaces/about';
 import { AboutService } from 'src/app/services/about.service';
 import { PersonService } from 'src/app/services/person.service';
@@ -19,16 +21,20 @@ export class AboutComponent implements OnInit {
   addForm: boolean = false;
   errMsj!: string;
   exitsAbout: boolean = false;
+  show!: boolean;
 
   constructor(
     private aboutService: AboutService,
     private tokenService: TokenService,
-    private personService: PersonService
+    private personService: PersonService,
+    private router: Router,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
     this.getPersonId(this.personId);
     this.getToken();
+    this.show = true;
   }
 
   handlerForm = (): void => {
@@ -45,21 +51,23 @@ export class AboutComponent implements OnInit {
           }
         },
         (err) => {
-          this.errMsj = err.error.mensaje;
-
-          /*this.toastr.error(this.errMsj, 'Fail', {
-        timeOut: 3000,
-        positionClass: 'toast-top-center',
-      });*/
-          console.log(err.error.mensaje);
+          this.isLogged = false;
+          this.tokenService.logOut();
+          this.errMsj = err.message;
+          this.toastr.error(this.errMsj, 'Fail', {
+            timeOut: 1500,
+            positionClass: 'toast-top-center',
+          });
+          this.tokenService.logOut();
+          setTimeout(() => {
+            this.router.navigate(['/']).then(() => {
+              window.location.reload();
+            });
+          }, 1500);
         }
       );
     } else {
-      this.about = {
-        id: 0,
-        descripcion:
-          'Deberá ingresar primero la persona para poder cargar la descripción',
-      };
+      this.show = false;
     }
   }
   getAboutDetail(): void {
@@ -68,20 +76,28 @@ export class AboutComponent implements OnInit {
         if (data.length != 0) {
           this.exitsAbout = true;
           this.about = data[0];
+          console.log(this.about);
         } else
           this.about = {
             id: 0,
-            descripcion:
-              'No hay acerca de mi cargado',
+            descripcion: 'No hay acerca de mi cargado',
           };
+        this.show = false;
       },
       (err) => {
-        this.errMsj = err.error.mensaje;
-        /*this.toastr.error(this.errMsj, 'Fail', {
-        timeOut: 3000,
-        positionClass: 'toast-top-center',
-      });*/
-        console.log(err.error.mensaje);
+        this.isLogged = false;
+        this.tokenService.logOut();
+        this.errMsj = err.message;
+        this.toastr.error(this.errMsj, 'Fail', {
+          timeOut: 1500,
+          positionClass: 'toast-top-center',
+        });
+        this.tokenService.logOut();
+        setTimeout(() => {
+          this.router.navigate(['/']).then(() => {
+            window.location.reload();
+          });
+        }, 1500);
       }
     );
   }

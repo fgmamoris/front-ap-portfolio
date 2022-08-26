@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Education } from 'src/app/interfaces/education';
 import { EducationService } from 'src/app/services/education.service';
 import { TokenService } from 'src/app/services/token.service';
@@ -18,7 +19,8 @@ export class EducationItemComponent implements OnInit {
   constructor(
     private tokenService: TokenService,
     private educationService: EducationService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -34,21 +36,29 @@ export class EducationItemComponent implements OnInit {
   handlerRemove(id: number): void {
     this.educationService.deleteEducation(id).subscribe(
       (data) => {
-        /*this.toastr.error(this.errMsj, 'Fail', {
-        timeOut: 3000,
-        positionClass: 'toast-top-center',
-      });*/
-        this.router.navigate(['/']).then(() => {
-          window.location.reload();
+        this.toastr.error('Eliminación correcta', 'OK', {
+          timeOut: 1500, positionClass: 'toast-top-center'
         });
+        setTimeout(() => {
+          this.router.navigate(['/']).then(() => {
+            window.location.reload();
+          });
+        }, 1500);
       },
       (err) => {
-        this.errMsj = err.error.mensaje;
-        /*this.toastr.error(this.errMsj, 'Fail', {
-        timeOut: 3000,
-        positionClass: 'toast-top-center',
-      });*/
-        console.log(err.error.mensaje);
+        this.isLogged = false;
+        this.tokenService.logOut();
+        this.errMsj = err.message;
+        console.log(this.errMsj);
+        this.toastr.error(this.errMsj, 'Fail', {
+          timeOut: 1500, positionClass: 'toast-top-center',
+        });
+        setTimeout(() => {
+          this.router.navigate(['/']).then(() => {
+            window.location.reload();
+          });
+        }, 1500);
+
       }
     );
   }

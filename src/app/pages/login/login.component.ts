@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { LoginUser } from '../../models/loginUser';
 import { AuthService } from '../../services/auth.service';
 import { TokenService } from '../../services/token.service';
-//import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -22,8 +22,9 @@ export class LoginComponent implements OnInit {
   constructor(
     private tokenService: TokenService,
     private authService: AuthService,
-    private router: Router //  private toastr: ToastrService
-  ) { }
+    private router: Router,
+    private toastr: ToastrService
+  ) {}
   ngOnInit(): void {
     if (this.tokenService.getToken()) {
       this.isLogged = true;
@@ -37,25 +38,28 @@ export class LoginComponent implements OnInit {
         this.isLogged = true;
         this.tokenService.setToken(data.token);
         this.tokenService.setUserName(data.nombreUsuario);
-        /*   this.toastr.success('Bienvenido ' + data.nombreUsuario, 'OK', {
+        this.toastr.success('Bienvenido ' + data.nombreUsuario, 'OK', {
           timeOut: 3000,
           positionClass: 'toast-top-center',
-        });*/
+        });
         this.isLoginFail = false;
         this.router.navigate(['/']);
       },
       (err) => {
-        this.isLogged = false;
         /********
          * CORREGIR MESSAGE POR MENSAJE QUE ES LO QUE RETORNA EL BACKEND
          */
-        this.errMsj = err.error.mensaje;
+        this.tokenService.logOut();
         this.isLoginFail = true;
-        /*this.toastr.error(this.errMsj, 'Fail', {
+        this.isLogged = false;
+        err.error.mensaje !== undefined || err.error.mensaje !== null
+          ? (this.errMsj = err.error.mensaje)
+          : (this.errMsj = err.error.message);
+        console.log(err);
+        this.toastr.error(this.errMsj, 'Fail', {
           timeOut: 3000,
           positionClass: 'toast-top-center',
-        });*/
-        console.log(err.error.mensaje);
+        });
       }
     );
   }

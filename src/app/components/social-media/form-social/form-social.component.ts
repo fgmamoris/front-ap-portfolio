@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { SocialMedia } from 'src/app/interfaces/social-media';
 import { SocialMediaService } from 'src/app/services/socialMedia.service';
+import { TokenService } from 'src/app/services/token.service';
 
 @Component({
   selector: 'app-form-social',
@@ -15,18 +16,20 @@ export class FormSocialComponent implements OnInit {
   @Input() handlerCancel: any;
   @Input() personId!: number;
   @Input() idSocial!: number;
-  errMsj!: String;
+  errMsj!: string;
   socialDetailForm!: SocialMedia;
   resultado!: string;
   form!: FormGroup;
   //reg: string = '(https?: \/\/)?(www\.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)|(https?:\/\/)?(www\.)?(?!ww)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)'
-  reg: string = '@^(http\:\/\/|https\:\/\/)?([a-z0-9][a-z0-9\-]*\.)+[a-z0-9][a-z0-9\-]*$@i'
-
-
+  reg: string =
+    '@^(http://|https://)?([a-z0-9][a-z0-9-]*.)+[a-z0-9][a-z0-9-]*$@i';
+  show: boolean = true;
 
   constructor(
     private socialService: SocialMediaService,
-    private router: Router, private toastr: ToastrService
+    private router: Router,
+    private toastr: ToastrService,
+    private tokenService: TokenService
   ) {
     this.socialDetailForm = {
       id: 0,
@@ -41,26 +44,35 @@ export class FormSocialComponent implements OnInit {
   }
 
   onSubmit(social: SocialMedia): void {
+    this.show = true;
     if (this.idSocial == 0) {
       this.socialService.addSocial(social, this.personId).subscribe(
         (data) => {
+          this.toastr.success('Creación correcta', 'OK', {
+            timeOut: 1500,
+            positionClass: 'toast-top-center',
+          });
           this.form!.reset();
           this.handlerCancel();
-          this.router.navigate(['/']).then(() => {
-            window.location.reload();
-          });
-          /*this.toastr.success('Producto Creado', 'OK', {
-            timeOut: 3000, positionClass: 'toast-top-center'
-          });*/
-          //this.router.navigate(['/lista']);
+          setTimeout(() => {
+            this.router.navigate(['/']).then(() => {
+              window.location.reload();
+            });
+          }, 1500);
         },
         (err) => {
-          console.log(err.error.mensaje);
-          /*this.toastr.error(err.error.mensaje, 'Fail', {
-            timeOut: 3000,  positionClass: 'toast-top-center',
+          this.tokenService.logOut();
+          this.errMsj = err.message;
+          console.log(this.errMsj);
+          this.toastr.error(this.errMsj, 'Fail', {
+            timeOut: 1500,
+            positionClass: 'toast-top-center',
           });
-          // this.router.navigate(['/']);
-          */
+          setTimeout(() => {
+            this.router.navigate(['/']).then(() => {
+              window.location.reload();
+            });
+          }, 1500);
         }
       );
     } else {
@@ -71,9 +83,9 @@ export class FormSocialComponent implements OnInit {
         })
         .subscribe(
           (data) => {
-
             this.toastr.success('Edición correcta', 'OK', {
-              timeOut: 1500, positionClass: 'toast-top-center'
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
             });
             this.form!.reset();
             this.handlerCancel();
@@ -82,20 +94,20 @@ export class FormSocialComponent implements OnInit {
                 window.location.reload();
               });
             }, 1500);
-
-
           },
           (err) => {
-            console.log(err.error.mensaje);
-            this.toastr.error(err.error.mensaje, 'Fail', {
-              timeOut: 1500, positionClass: 'toast-top-center',
+            this.tokenService.logOut();
+            this.errMsj = err.message;
+            console.log(this.errMsj);
+            this.toastr.error(this.errMsj, 'Fail', {
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
             });
             setTimeout(() => {
               this.router.navigate(['/']).then(() => {
                 window.location.reload();
               });
             }, 1500);
-
           }
         );
     }
@@ -107,16 +119,25 @@ export class FormSocialComponent implements OnInit {
           this.socialDetailForm = data;
 
           this.constructForm(this.socialDetailForm);
+          this.show = false;
         },
         (err) => {
-          this.errMsj = err.error.mensaje;
-          /*this.toastr.error(this.errMsj, 'Fail', {
-          timeOut: 3000,
-          positionClass: 'toast-top-center',
-        });*/
-          console.log(err.error.mensaje);
+          this.tokenService.logOut();
+          this.errMsj = err.message;
+          console.log(this.errMsj);
+          this.toastr.error(this.errMsj, 'Fail', {
+            timeOut: 1500,
+            positionClass: 'toast-top-center',
+          });
+          setTimeout(() => {
+            this.router.navigate(['/']).then(() => {
+              window.location.reload();
+            });
+          }, 1500);
         }
       );
+    } else {
+      this.show = false;
     }
   }
   constructForm(social: SocialMedia): void {
@@ -127,7 +148,9 @@ export class FormSocialComponent implements OnInit {
         Validators.required,
       ]),
       urlRedSocial: new FormControl(social.urlRedSocial, [
-        Validators.pattern('(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})'),
+        Validators.pattern(
+          '(https?://(?:www.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9].[^s]{2,}|www.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9].[^s]{2,}|https?://(?:www.|(?!www))[a-zA-Z0-9]+.[^s]{2,}|www.[a-zA-Z0-9]+.[^s]{2,})'
+        ),
         Validators.required,
       ]),
     });

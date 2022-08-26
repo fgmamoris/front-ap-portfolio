@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Experience } from 'src/app/interfaces/experience';
 import { ExperienceService } from 'src/app/services/experience.service';
 import { TokenService } from 'src/app/services/token.service';
@@ -18,7 +19,8 @@ export class ExperienceItemComponent implements OnInit {
   constructor(
     private tokenService: TokenService,
     private experienceService: ExperienceService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -34,25 +36,34 @@ export class ExperienceItemComponent implements OnInit {
   handlerRemove(id: number): void {
     this.experienceService.deleteExperience(id).subscribe(
       (data) => {
-        /*this.toastr.error(this.errMsj, 'Fail', {
-        timeOut: 3000,
-        positionClass: 'toast-top-center',
-      });*/
-        this.router.navigate(['/']).then(() => {
-          window.location.reload();
+        this.toastr.error('Eliminación correcta', 'OK', {
+          timeOut: 1500, positionClass: 'toast-top-center'
         });
+        setTimeout(() => {
+          this.router.navigate(['/']).then(() => {
+            window.location.reload();
+          });
+        }, 1500);
       },
       (err) => {
+        this.isLogged= false;
+        this.tokenService.logOut()
+        this.errMsj = err.message;
+        console.log(this.errMsj);
+        this.toastr.error(this.errMsj,'Fail', {
+          timeOut: 1500, positionClass: 'toast-top-center',
+        });
+        setTimeout(() => {
+          this.router.navigate(['/']).then(() => {
+            window.location.reload();
+          });
+        }, 1500);
 
-        this.errMsj = err.error.mensaje;
-        /*this.toastr.error(this.errMsj, 'Fail', {
-        timeOut: 3000,
-        positionClass: 'toast-top-center',
-      });*/
-        console.log(err.error.mensaje);
       }
     );
   }
+
+
   getfecha(date: Date): String {
     return date !== null
       ? `${new Date(date).toISOString().slice(6, 7)} - ${new Date(date)

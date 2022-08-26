@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { About } from 'src/app/interfaces/about';
 import { AboutService } from 'src/app/services/about.service';
+import { TokenService } from 'src/app/services/token.service';
 
 @Component({
   selector: 'app-form-about',
@@ -14,12 +15,18 @@ export class FormAboutComponent implements OnInit {
   @Input() handlerCancel: any;
   @Input() personId!: number;
   @Input() exitsAbout!: boolean;
-  errMsj!: String;
+  errMsj!: string;
   AboutDetailForm!: About;
   resultado!: string;
   form!: FormGroup;
+  show: boolean = true;
 
-  constructor(private aboutService: AboutService, private router: Router, private toastr: ToastrService) {
+  constructor(
+    private aboutService: AboutService,
+    private router: Router,
+    private toastr: ToastrService,
+    private tokenService: TokenService
+  ) {
     this.AboutDetailForm = {
       id: 0,
       descripcion: '',
@@ -32,27 +39,34 @@ export class FormAboutComponent implements OnInit {
   }
 
   onSubmit(about: About): void {
+    this.show = true;
     if (!this.exitsAbout) {
       this.aboutService.addAbout(about, this.personId).subscribe(
         (data) => {
-
+          this.toastr.success('Creación correcta', 'OK', {
+            timeOut: 1500,
+            positionClass: 'toast-top-center',
+          });
           this.form!.reset();
           this.handlerCancel();
-          this.router.navigate(['/']).then(() => {
-            window.location.reload();
-          });
-          /*this.toastr.success('Producto Creado', 'OK', {
-            timeOut: 3000, positionClass: 'toast-top-center'
-          });*/
-          //this.router.navigate(['/lista']);
+          setTimeout(() => {
+            this.router.navigate(['/']).then(() => {
+              window.location.reload();
+            });
+          }, 1500);
         },
         (err) => {
-          console.log(err.error.mensaje);
-          /*this.toastr.error(err.error.mensaje, 'Fail', {
-            timeOut: 3000,  positionClass: 'toast-top-center',
+          this.tokenService.logOut();
+          this.errMsj = err.message;
+          this.toastr.error(this.errMsj, 'Fail', {
+            timeOut: 1500,
+            positionClass: 'toast-top-center',
           });
-          // this.router.navigate(['/']);
-          */
+          setTimeout(() => {
+            this.router.navigate(['/']).then(() => {
+              window.location.reload();
+            });
+          }, 1500);
         }
       );
     } else {
@@ -63,9 +77,9 @@ export class FormAboutComponent implements OnInit {
         })
         .subscribe(
           (data) => {
-
             this.toastr.success('Edición correcta', 'OK', {
-              timeOut: 1500, positionClass: 'toast-top-center'
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
             });
             this.form!.reset();
             this.handlerCancel();
@@ -74,20 +88,20 @@ export class FormAboutComponent implements OnInit {
                 window.location.reload();
               });
             }, 1500);
-
-
           },
           (err) => {
-            console.log(err.error.mensaje);
-            this.toastr.error(err.error.mensaje, 'Fail', {
-              timeOut: 1500, positionClass: 'toast-top-center',
+            this.errMsj = err.message;
+            this.tokenService.logOut();
+            console.log(this.errMsj);
+            this.toastr.error(this.errMsj, 'Fail', {
+              timeOut: 1500,
+              positionClass: 'toast-top-center',
             });
             setTimeout(() => {
               this.router.navigate(['/']).then(() => {
                 window.location.reload();
               });
             }, 1500);
-
           }
         );
     }
@@ -98,23 +112,32 @@ export class FormAboutComponent implements OnInit {
         (data) => {
           this.AboutDetailForm = data;
           this.constructForm(this.AboutDetailForm);
+          this.show = false;
         },
         (err) => {
-          this.errMsj = err.error.mensaje;
-          /*this.toastr.error(this.errMsj, 'Fail', {
-          timeOut: 3000,
-          positionClass: 'toast-top-center',
-        });*/
-          console.log(err.error.mensaje);
+          this.errMsj = err.message;
+          this.tokenService.logOut();
+          console.log(this.errMsj);
+          this.toastr.error(this.errMsj, 'Fail', {
+            timeOut: 1500,
+            positionClass: 'toast-top-center',
+          });
+          setTimeout(() => {
+            this.router.navigate(['/']).then(() => {
+              window.location.reload();
+            });
+          }, 1500);
         }
       );
+    } else {
+      this.show = false;
     }
   }
   constructForm(about: About): void {
-
     this.form = new FormGroup({
       descripcion: new FormControl(about.descripcion, [
         Validators.minLength(5),
+        Validators.maxLength(10000),
         Validators.required,
       ]),
     });
